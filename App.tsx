@@ -9,6 +9,8 @@ import React, { useEffect } from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   Alert,
+  Button,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -27,22 +29,25 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import SplashScreen from 'react-native-splash-screen';
+import AppRouter from './src/navigation/root-navigator';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import MainNavigation from './src/screens/main/MainNavigator';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import HomeScreen from './src/screens/main/Home';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import ProfileScreen from './src/screens/main/Profile';
+const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
   useEffect(()=>{
     SplashScreen.hide()
  },[])
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-        <Text>Hi There</Text>
-    </SafeAreaView>
+      <AppRouter />
   );
 }
 

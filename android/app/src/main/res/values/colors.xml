@@ -2,6 +2,6 @@
 <resources>
     <!-- Insert your background color for the splash screen -->
     <color name="background">#06041f</color>
-    <color name="primary_dark">#000</color>
+    <color name="primary_dark">#06041f</color>
 
 </resources>
