@@ -1,9 +1,9 @@
-const colors = {
+export const Colors = {
     primary:'#6152FF',
     secondary:'#12112A',
     textPrimary:'',
     textTertiary:'',
-    textGrey:'',
+    textGrey:'#DDDDDD',
     borderColor:'',
     backgroundColor:'#06041F',
     ratingColor:'',

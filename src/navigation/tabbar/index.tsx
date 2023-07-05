@@ -13,7 +13,7 @@ const MainNavigation = () => {
 
     return (
         <TabBar.Navigator initialRouteName="Home">
-            <TabBar.Screen name="Home" component={HomeScreen} />
+            <TabBar.Screen name="Home" component={HomeScreen} options={{headerShown:false}} />
             <TabBar.Screen name="Explore" component={SearchScreen} />
             <TabBar.Screen name="My List" component={DownloadsScreen} />
             <TabBar.Screen name="Profile" component={ProfileScreen} />
