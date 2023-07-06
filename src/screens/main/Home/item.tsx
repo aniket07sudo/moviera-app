@@ -1,16 +1,19 @@
 import React from "react";
-import { Dimensions, Image, ImageBackground, StyleSheet, View } from "react-native";
+import { Dimensions, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { DataProps } from "./HeroData";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { Rect, Svg } from "react-native-svg";
+import { MediumText, RegularText, SemiBold } from "../../../utils/Text";
+import fonts from "../../../theme/fonts";
+import LinearGradient from "react-native-linear-gradient";
+import { Colors } from "../../../theme/colors";
 // import { Image } from "react-native-svg";
 
 const ITEM_HEIGHT = Dimensions.get('screen').height * 0.65;
-const SCREEN_WIDTH = Dimensions.get('screen').width;
+const ITEM_WIDTH = Dimensions.get('screen').width;
 
 const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
-const AnimatedSVG = Animated.createAnimatedComponent(Svg);
 
 interface ItemProps {
     item:DataProps,
@@ -20,39 +23,66 @@ interface ItemProps {
 
 const CarouselItem = ({item,index,ScrollX}:ItemProps) => {
 
-    // const animatedStyle = useAnimatedStyle(() => {
-    //     return {
-    //         transform:[{ translateX:interpolate(ScrollX.value, [(index - 2) * SCREEN_WIDTH,(index - 1) * SCREEN_WIDTH], [-SCREEN_WIDTH,0]), }]
-    //     };
-    //   });
+    const inputRange = [(index - 1) * ITEM_WIDTH,index * ITEM_WIDTH,(index + 1) * ITEM_WIDTH];
 
-    const translateX = interpolate(ScrollX.value,
-        [(index - 1) * SCREEN_WIDTH,index * SCREEN_WIDTH,(index + 1) * SCREEN_WIDTH],
-        [-SCREEN_WIDTH * 0.8,0,SCREEN_WIDTH * 0.8]
-    )
+    const animatedImageStyle = useAnimatedStyle(() => {
+        return {
+            width:ITEM_WIDTH,
+            height:ITEM_HEIGHT,
+            transform:[{
+                translateX:interpolate(ScrollX.value,inputRange,[-ITEM_WIDTH * 0.5,0,ITEM_WIDTH * 0.5])
+            }]
+        }
+    })
+
+    const textAnimationStyle = useAnimatedStyle(() => {
+        return {
+            transform:[{
+                translateX:interpolate(ScrollX.value,inputRange,[ITEM_WIDTH * .8,0,-ITEM_WIDTH * .8])
+            }]
+        }
+    })
 
     return (
-        <View style={{width:SCREEN_WIDTH,justifyContent:'center',alignItems:'center'}}>
-            <View style={{width:SCREEN_WIDTH,height:ITEM_HEIGHT,overflow:'hidden',alignItems:'center'}}>
-                <Animated.Image style={[Styles.imageContainer,{transform:[{translateX}]}]} source={require('../../../assets/images/Hero.jpeg')} />
+        <View style={{flex:1,height:ITEM_HEIGHT,width:ITEM_WIDTH}}>
+            <View style={Styles.container}>
+                <AnimatedImage style={[animatedImageStyle]} source={item.image}>
+                    <LinearGradient start={{x:0.3,y:0.1}} end={{x:0.3,y:0.98}} style={Styles.linearGradient} colors={['transparent',Colors.secondary]}>
+                        <Animated.View style={[Styles.textContainer,textAnimationStyle]}>
+                            <SemiBold styles={{fontSize:fonts.size.font24}}>Dr Strange</SemiBold>
+                            <MediumText styles={{fontSize:fonts.size.font12,color:'#f0EEED'}}>Action</MediumText>
+                            <RegularText styles={{fontSize:fonts.size.font12,textAlign:'center'}} >Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima laborum natus, saepe esse necessitatibus quisquam quaerat commodi itaque animi ipsa.</RegularText>
+                        </Animated.View>
+                    </LinearGradient>
+                </AnimatedImage>
             </View>
         </View>
     )
 }
 
 const Styles = StyleSheet.create({
-    itemContainer:{
-        position:'relative',
-        alignItems:'center',
-        justifyContent:'center',
-        overflow:'hidden',
-        width:SCREEN_WIDTH,
+    container:{
+        width:ITEM_WIDTH,
         height:ITEM_HEIGHT,
+        overflow:'hidden',
+        
     },
     imageContainer:{
-        width:SCREEN_WIDTH,
+        width:ITEM_WIDTH,
         height:ITEM_HEIGHT,
-        resizeMode:'cover'
+        resizeMode:'cover',
+    },
+    textContainer:{
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
+        position:'absolute',
+        bottom:30,
+        left:10,
+        right:10
+    },
+    linearGradient:{
+        ...StyleSheet.absoluteFillObject
     }
 })
 
