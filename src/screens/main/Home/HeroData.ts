@@ -1,7 +1,9 @@
+import { ImageSourcePropType } from "react-native/types"
+
 export interface DataProps {
     id:number,
     title:string,
-    image:string
+    image:ImageSourcePropType
 }
 
 export const Data : DataProps[] = [

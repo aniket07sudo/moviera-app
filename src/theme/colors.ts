@@ -3,12 +3,12 @@ export const Colors = {
     secondary:'#12112A',
     textPrimary:'',
     textTertiary:'',
-    textGrey:'#DDDDDD',
+    textGrey:'#8c8c8c',
     borderColor:'',
     backgroundColor:'#06041F',
     ratingColor:'',
     progressColor:'',
     white:'#FFFFFF',
     black:'#000000',
-    grey:'#1F1E36'
+    grey:'#d1d1d1'
 }

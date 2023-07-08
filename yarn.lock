@@ -1543,6 +1543,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
+"@react-native-community/blur@^4.3.2":
+  "integrity" "sha512-0ID+pyZKdC4RdgC7HePxUQ6JmsbNrgz03u+6SgqYpmBoK/rE+7JffqIw7IEsfoKitLEcRNLGekIBsfwCqiEkew=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/blur/-/blur-4.3.2.tgz"
+  "version" "4.3.2"
+
 "@react-native-community/cli-clean@^10.1.1":
   "integrity" "sha512-iNsrjzjIRv9yb5y309SWJ8NDHdwYtnCpmxZouQDyOljUdC9MwdZ4ChbtA4rwQyAwgOVfS9F/j56ML3Cslmvrxg=="
   "resolved" "https://registry.npmjs.org/@react-native-community/cli-clean/-/cli-clean-10.1.1.tgz"
@@ -6203,10 +6208,10 @@
   "resolved" "https://registry.npmjs.org/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz"
   "version" "3.3.0"
 
-"react-native-svg@^13.9.0":
-  "integrity" "sha512-Ey18POH0dA0ob/QiwCBVrxIiwflhYuw0P0hBlOHeY4J5cdbs8ngdKHeWC/Kt9+ryP6fNoEQ1PUgPYw2Bs/rp5Q=="
-  "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.9.0.tgz"
-  "version" "13.9.0"
+"react-native-svg@^13.10.0":
+  "integrity" "sha512-D/oYTmUi5nsA/2Nw4WYlF1UUi3vZqhpESpiEhpYCIFB/EMd6vz4A/uq3tIzZFcfa5z2oAdGSxRU1TaYr8IcPlQ=="
+  "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.10.0.tgz"
+  "version" "13.10.0"
   dependencies:
     "css-select" "^5.1.0"
     "css-tree" "^1.1.3"

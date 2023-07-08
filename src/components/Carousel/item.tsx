@@ -1,16 +1,16 @@
 import React from "react";
 import { Dimensions, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
-import { DataProps } from "./HeroData";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { Rect, Svg } from "react-native-svg";
-import { MediumText, RegularText, SemiBold } from "../../../utils/Text";
-import fonts from "../../../theme/fonts";
 import LinearGradient from "react-native-linear-gradient";
-import { Colors } from "../../../theme/colors";
+import { DataProps } from "../../screens/main/Home/HeroData";
+import { MediumText, RegularText, SemiBold } from "../../utils/Text";
+import fonts from "../../theme/fonts";
+import { Colors } from "../../theme/colors";
 // import { Image } from "react-native-svg";
 
-const ITEM_HEIGHT = Dimensions.get('screen').height * 0.65;
+const ITEM_HEIGHT = Dimensions.get('screen').height * 0.68;
 const ITEM_WIDTH = Dimensions.get('screen').width;
 
 const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
@@ -50,7 +50,7 @@ const CarouselItem = ({item,index,ScrollX}:ItemProps) => {
                     <LinearGradient start={{x:0.3,y:0.1}} end={{x:0.3,y:0.98}} style={Styles.linearGradient} colors={['transparent',Colors.secondary]}>
                         <Animated.View style={[Styles.textContainer,textAnimationStyle]}>
                             <SemiBold styles={{fontSize:fonts.size.font24}}>Dr Strange</SemiBold>
-                            <MediumText styles={{fontSize:fonts.size.font12,color:'#f0EEED'}}>Action</MediumText>
+                            <MediumText styles={Styles.category}>Action</MediumText>
                             <RegularText styles={{fontSize:fonts.size.font12,textAlign:'center'}} >Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima laborum natus, saepe esse necessitatibus quisquam quaerat commodi itaque animi ipsa.</RegularText>
                         </Animated.View>
                     </LinearGradient>
@@ -67,6 +67,10 @@ const Styles = StyleSheet.create({
         overflow:'hidden',
         
     },
+    category:{
+        fontSize:fonts.size.font12,
+        color:Colors.textGrey
+    },
     imageContainer:{
         width:ITEM_WIDTH,
         height:ITEM_HEIGHT,
@@ -76,8 +80,9 @@ const Styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
+        gap:2,
         position:'absolute',
-        bottom:30,
+        bottom:50,
         left:10,
         right:10
     },
