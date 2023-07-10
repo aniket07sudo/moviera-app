@@ -18,7 +18,6 @@ import { BlurView } from "@react-native-community/blur";
 const IconChooser = (name:string,color:string) => {
 
     let iconUrl;
-    console.log("Color",color);
     
     switch(name) {
         case 'Home':

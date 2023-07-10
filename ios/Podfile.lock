@@ -341,6 +341,11 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-splash-screen (3.3.0):
     - React-Core
+  - react-native-video (5.2.1):
+    - React-Core
+    - react-native-video/Video (= 5.2.1)
+  - react-native-video/Video (5.2.1):
+    - React-Core
   - React-perflogger (0.71.11)
   - React-RCTActionSheet (0.71.11):
     - React-Core/RCTActionSheetHeaders (= 0.71.11)
@@ -520,6 +525,7 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -608,6 +614,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -687,6 +695,7 @@ SPEC CHECKSUMS:
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
+  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   React-perflogger: e706562ab7eb8eb590aa83a224d26fa13963d7f2
   React-RCTActionSheet: 57d4bd98122f557479a3359ad5dad8e109e20c5a
   React-RCTAnimation: ccf3ef00101ea74bda73a045d79a658b36728a60
