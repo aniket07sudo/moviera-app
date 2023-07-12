@@ -1,11 +1,11 @@
 import React from "react";
 import { Circle, Path, Svg } from "react-native-svg";
 
-interface ExploreIconProps {
+interface ProfileIconProps {
   color:string
 }
 
-function ExploreIcon({color}:ExploreIconProps) {
+function ProfileIcon({color}:ProfileIconProps) {
   return (
     <Svg
       width="24"
@@ -17,11 +17,10 @@ function ExploreIcon({color}:ExploreIconProps) {
       strokeWidth="2"
       viewBox="0 0 24 24"
     >
-      <Circle cx="12" cy="12" r="10"></Circle>
-      <Path d="M2 12L22 12"></Path>
-      <Path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"></Path>
+      <Path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></Path>
+      <Circle cx="12" cy="7" r="4"></Circle>
     </Svg>
   );
 }
 
-export default ExploreIcon;
+export default ProfileIcon;

@@ -22,10 +22,16 @@ const viewabilityConfig = {
     itemVisiblePercentThreshold:80
 }
 
-const CarouselComponent = () => {
+interface CarouselProps {
+    ScrollY?:Animated.SharedValue<number>
+}
+
+const CarouselComponent = ({ScrollY}:CarouselProps) => {
     const ScrollX = useSharedValue<number>(0);
     const cellRefs = useRef();
     const [refData,setRefData] = useState([]);
+
+    const [isSound,setIsSound] = useState(false);
 
     const ScrollHandler = useAnimatedScrollHandler({
         onScroll:(event) => {
@@ -35,18 +41,23 @@ const CarouselComponent = () => {
 
     useEffect(() => {
         const d = Data.map((item,index) => ({value:item,id:index}));
-        // console.log("D",d,Data);
         
-        d.forEach(item => {
+        Data.forEach(item => {
             cellRefs[item.id] = createRef();
-        });
-        console.log("Data",Data);
+        })
+        // d.forEach(item => {
+        //     cellRefs[item.id] = createRef();
+        // });
+        console.log("Data",d);
         
-        setRefData([...d]);
+        // setRefData([...d]);
+        setRefData([...Data]);
     },[])
 
     const _onViewableItemsChanged = useRef(props => {
         const changed = props.changed;
+        console.log("Prips",props);
+
         changed.forEach(item => {
             const cell = cellRefs[item.key];
             console.log("Cell",cell);
@@ -68,7 +79,6 @@ const CarouselComponent = () => {
     return (
         <View>
             <StatusBar barStyle={'light-content'} />
-            <LinearGradient colors={[Colors.secondary,'transparent']} style={Styles.statusBarGradient} />
             <View style={Styles.carouselContainer}>
                 <AnimatedFlatlist
                     data={refData}
@@ -91,12 +101,12 @@ const CarouselComponent = () => {
                     })}
                     viewabilityConfig={viewabilityConfig}
                     renderItem={({item,index}) => (
-                        <CarouselItem key={index} ref={cellRefs[item.id]} pause={index != 0} item={item} index={index} ScrollX={ScrollX} />
+                        <CarouselItem ScrollY={ScrollY} key={index} setIsSound={setIsSound} isSound={isSound} ref={cellRefs[item.id]} pause={index != 0} item={item} index={index} ScrollX={ScrollX} />
                     )}
                 />
                 <View style={Styles.dotsContainer}>
                     <View style={Styles.dotsWrapper}>
-                        {Data.map((item,index) => (
+                        {Data.map((_,index) => (
                             <DotsComponent key={index} ScrollX={ScrollX} index={index} />
                         ))}
                     </View>
@@ -125,12 +135,12 @@ const Styles = StyleSheet.create({
         width:5 * 20,
         justifyContent:'center'
     },
-    statusBarGradient:{
-        position:'absolute',
-        zIndex:1,
-        width:SCREEN_WIDTH,
-        height:40
-    },
+    // statusBarGradient:{
+    //     position:'absolute',
+    //     zIndex:1,
+    //     width:SCREEN_WIDTH,
+    //     height:40,
+    // },
 })
 
 export default CarouselComponent;

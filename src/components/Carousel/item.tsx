@@ -1,14 +1,15 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { Dimensions, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
-import Animated, { Easing, FadeIn, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import MaskedView from "@react-native-masked-view/masked-view";
-import { Rect, Svg } from "react-native-svg";
+import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
+import Animated, { Easing, Extrapolation, FadeIn, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import LinearGradient from "react-native-linear-gradient";
 import { DataProps } from "../../screens/main/Home/HeroData";
 import { MediumText, RegularText, SemiBold } from "../../utils/Text";
 import fonts from "../../theme/fonts";
 import { Colors } from "../../theme/colors";
-import Video, { VideoProperties } from "react-native-video";
+import Video from "react-native-video";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SoundIcon from "../../assets/icons/Carousel/Sound";
+import { useIsFocused } from "@react-navigation/native";
 // import { Image } from "react-native-svg";
 
 const ITEM_HEIGHT = Dimensions.get('screen').height * 0.68;
@@ -20,16 +21,20 @@ interface ItemProps {
     item:DataProps,
     index:number,
     pause:boolean,
-    ScrollX:Animated.SharedValue<number>
+    isSound:boolean,
+    setIsSound:any,
+    ScrollX:Animated.SharedValue<number>,
+    ScrollY:Animated.SharedValue<number>
 }
 
 const AnimatedVideo = Animated.createAnimatedComponent(Video);
 
-const CarouselItem = forwardRef(({item,index,pause,ScrollX}:ItemProps,ref) => {
+const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound,ScrollY}:ItemProps,ref) => {
 
     const inputRange = [(index - 1) * ITEM_WIDTH,index * ITEM_WIDTH,(index + 1) * ITEM_WIDTH];
     const [showVideo,setShowVideo] = useState(false);
     const [paused,setPaused] = useState(pause);
+    const soundOpacity = useSharedValue(0);
 
     const timerRef = useRef<any>(null);
 
@@ -40,9 +45,8 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX}:ItemProps,ref) => {
             initalRender();
         },
         removeRender:() => {
-            clearTimeout(timerRef.current);
             setPaused(true);
-            // setShowVideo(false);
+            clearTimeout(timerRef.current);
         },
         play:() => {
             setPaused(false);
@@ -55,32 +59,36 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX}:ItemProps,ref) => {
 
     const animatedVideoStyle = useAnimatedStyle(() => {
         return {
-            width:ITEM_WIDTH,
-            height:ITEM_HEIGHT,
-            position:'absolute',
             opacity:opacityValue.value,
             transform:[{
-                translateX:interpolate(ScrollX.value,inputRange,[-ITEM_WIDTH * 0.5,0,ITEM_WIDTH * 0.5])
+                translateX:interpolate(ScrollX.value,inputRange,[-ITEM_WIDTH * 0.7,0,ITEM_WIDTH * 0.7])
             }]
         }
     })
 
     const animatedImageStyle = useAnimatedStyle(() => {
         return {
-            width:ITEM_WIDTH,
-            height:ITEM_HEIGHT,
-            position:'absolute',
+            
             transform:[{
-                translateX:interpolate(ScrollX.value,inputRange,[-ITEM_WIDTH * 0.5,0,ITEM_WIDTH * 0.5])
+                translateX:interpolate(ScrollX.value,inputRange,[-ITEM_WIDTH * 0.7,0,ITEM_WIDTH * 0.7])
             }]
         }
     })
 
     const textAnimationStyle = useAnimatedStyle(() => {
         return {
+            bottom:interpolate(ScrollY.value,[0,ITEM_HEIGHT],[50,ITEM_HEIGHT / 3],{extrapolateLeft:Extrapolation.CLAMP}),
+
             transform:[{
-                translateX:interpolate(ScrollX.value,inputRange,[ITEM_WIDTH * .8,0,-ITEM_WIDTH * .8])
+                translateX:interpolate(ScrollX.value,inputRange,[ITEM_WIDTH * .7,0,-ITEM_WIDTH * .7]),
             }]
+        }
+    })
+    
+
+    const showSoundIconStyle = useAnimatedStyle(() => {
+        return {
+            opacity:soundOpacity.value
         }
     })
 
@@ -93,47 +101,50 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX}:ItemProps,ref) => {
                 opacityValue.value = withTiming(1,{duration:500});
                 setPaused(false);
                 setShowVideo(true);
+                soundOpacity.value = withTiming(1,{duration:500,easing:Easing.ease});
+
             },3000)
+
         }
         
     }
 
-    const ImageLoaded = () => {
-        console.log("Image Ready");
-        setPaused(true);
-        setTimeout(() => {
-            // setShowVideo(true);
-            // zIndexValue.value = withTiming(4,{duration:3000});
-            opacityValue.value = withTiming(1,{duration:500})
-            setPaused(false);
-        },2000)
+    const VideoLoaded = () => {
     }
+
+    const handleSoundClick = () => {
+        console.log("Soound Click");
+        
+        setIsSound(!isSound);
+    }
+
+    const Padding = useSafeAreaInsets();
+
+    const screenIsFocused = useIsFocused();
+
+    // 
 
     return (
         <View  style={{flex:1,height:ITEM_HEIGHT,width:ITEM_WIDTH}}>
             <View style={Styles.container}>
-            
-                <AnimatedImage style={[animatedImageStyle]} source={item.value.image} />
-               {/* {showVideo && <AnimatedVideo 
-                        style={[animatedVideoStyle]}
-                        // onReadyForDisplay={ImageLoaded}
-                        paused={paused}
-                        
-                        poster={'../../../assets/images/Hero.jpeg'}
-                        repeat
-                        resizeMode={'cover'}
-                        source={{uri:item.value.video}}
-                    /> } */}
+                    <Animated.View style={[Styles.soundContainer,{top:Padding.top + 10},showSoundIconStyle]}  >
+                        <Pressable style={Styles.soundPressable} onPress={handleSoundClick} >
+                            <SoundIcon isSound={isSound} />
+                        </Pressable>
+                    </Animated.View>
+                <AnimatedImage style={[animatedImageStyle,{width:ITEM_WIDTH,height:ITEM_HEIGHT,position:'absolute'}]} source={item.image} />
 
                     <AnimatedVideo 
-                        style={[animatedVideoStyle]}
-                        // onReadyForDisplay={ImageLoaded}
-                        paused={paused}
-                        
+                        style={[animatedVideoStyle,{width:ITEM_WIDTH,height:ITEM_HEIGHT,position:'absolute'}]}
+                        onReadyForDisplay={VideoLoaded}
+                        muted={!isSound}
+                        paused={paused || !screenIsFocused}
+                        ignoreSilentSwitch={'ignore'}
                         poster={'../../../assets/images/Hero.jpeg'}
                         repeat
+                        playWhenInactive
                         resizeMode={'cover'}
-                        source={{uri:item.value.video}}
+                        source={{uri:item.video}}
                     />
                         
                     <LinearGradient start={{x:0.3,y:0.1}} end={{x:0.3,y:0.98}} style={Styles.linearGradient} colors={['transparent',Colors.secondary]}>
@@ -143,7 +154,6 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX}:ItemProps,ref) => {
                             <RegularText styles={{fontSize:fonts.size.font12,textAlign:'center'}} >Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima laborum natus, saepe esse necessitatibus quisquam quaerat commodi itaque animi ipsa.</RegularText>
                         </Animated.View>
                     </LinearGradient>
-                {/* </AnimatedImage> */}
                 
             </View>
         </View>
@@ -156,6 +166,15 @@ const Styles = StyleSheet.create({
         height:ITEM_HEIGHT,
         overflow:'hidden',
         position:'relative'
+    },
+    soundContainer:{
+        position:'absolute',
+        right:20,
+        zIndex:5,
+    },
+    soundPressable:{
+        // backgroundColor:'red',
+        padding:10
     },
     videoContainer:{
         position:'absolute',
@@ -182,7 +201,7 @@ const Styles = StyleSheet.create({
         alignItems:'center',
         gap:2,
         position:'absolute',
-        bottom:50,
+        // bottom:50,
         left:10,
         right:10
     },

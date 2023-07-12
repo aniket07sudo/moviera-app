@@ -8,10 +8,10 @@ import ProfileScreen from "../../screens/main/Profile";
 import HomeScreen from "../../screens/main/Home";
 import { Colors } from "../../theme/colors";
 import { Image, StyleSheet } from "react-native";
-import HomeIcon from "../../assets/images/BottomBar/Home";
-import ExploreIcon from "../../assets/images/BottomBar/Explore";
-import ListIcon from "../../assets/images/BottomBar/List";
-import ProfileIcon from "../../assets/images/BottomBar/Profile";
+import HomeIcon from "../../assets/icons/BottomBar/Home";
+import ExploreIcon from "../../assets/icons/BottomBar/Explore";
+import ListIcon from "../../assets/icons/BottomBar/List";
+import ProfileIcon from "../../assets/icons/BottomBar/Profile";
 import CustomTabbar from "./CustomTabbar";
 import { BlurView } from "@react-native-community/blur";
 
