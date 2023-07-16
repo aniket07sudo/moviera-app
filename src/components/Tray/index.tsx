@@ -6,6 +6,7 @@ import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture
 import { TrayDataType } from "../../screens/main/Home/constants";
 import { useNavigation } from "@react-navigation/native";
 import { HomeScreenNavigationProps, HomeScreenProps } from "../../ts/types/navigation";
+import Animated from "react-native-reanimated";
 // import { HomeScreenNavigationProp } from "../../ts/types/navigation";
 
 interface TrayProps {
@@ -31,8 +32,8 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
                 horizontal
                 
                 renderItem={({item,index}) => (
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index}})} style={Styles.cardContainer} key={index}>
-                        <Image source={item.image} style={Styles.imageContainer} />
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:'https://images.pexels.com/photos/5546074/pexels-photo-5546074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'}})} style={Styles.cardContainer} key={index}>
+                        <Animated.Image sharedTransitionTag={`${index}`} source={{uri:'https://images.pexels.com/photos/5546074/pexels-photo-5546074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'}} style={Styles.imageContainer} />
                     </TouchableWithoutFeedback>
                 )}
             />

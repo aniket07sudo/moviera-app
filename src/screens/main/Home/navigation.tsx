@@ -12,7 +12,7 @@ function HomeStackScreen() {
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-            <HomeStack.Screen name="HomeDetailsScreen" component={HomeDetails} />
+            <HomeStack.Screen options={{headerShown:false}} name="HomeDetailsScreen" component={HomeDetails} />
         </HomeStack.Navigator>
     )
 }
