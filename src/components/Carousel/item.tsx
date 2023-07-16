@@ -24,12 +24,11 @@ interface ItemProps {
     isSound:boolean,
     setIsSound:any,
     ScrollX:Animated.SharedValue<number>,
-    ScrollY:Animated.SharedValue<number>
 }
 
 const AnimatedVideo = Animated.createAnimatedComponent(Video);
 
-const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound,ScrollY}:ItemProps,ref) => {
+const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound}:ItemProps,ref) => {
 
     const inputRange = [(index - 1) * ITEM_WIDTH,index * ITEM_WIDTH,(index + 1) * ITEM_WIDTH];
     const [showVideo,setShowVideo] = useState(false);
@@ -77,8 +76,6 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound,Sc
 
     const textAnimationStyle = useAnimatedStyle(() => {
         return {
-            bottom:interpolate(ScrollY.value,[0,ITEM_HEIGHT],[50,ITEM_HEIGHT / 3],{extrapolateLeft:Extrapolation.CLAMP}),
-
             transform:[{
                 translateX:interpolate(ScrollX.value,inputRange,[ITEM_WIDTH * .7,0,-ITEM_WIDTH * .7]),
             }]
@@ -97,12 +94,12 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound,Sc
             setPaused(false);
 
         } else {
+            
             timerRef.current = setTimeout(() => {
                 opacityValue.value = withTiming(1,{duration:500});
                 setPaused(false);
                 setShowVideo(true);
                 soundOpacity.value = withTiming(1,{duration:500,easing:Easing.ease});
-
             },3000)
 
         }
@@ -110,6 +107,7 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound,Sc
     }
 
     const VideoLoaded = () => {
+        
     }
 
     const handleSoundClick = () => {
@@ -201,7 +199,7 @@ const Styles = StyleSheet.create({
         alignItems:'center',
         gap:2,
         position:'absolute',
-        // bottom:50,
+        bottom:50,
         left:10,
         right:10
     },

@@ -7,7 +7,6 @@ const resources = {
     en,
     es
 }
-console.log("Resources",resources);
 
 
 i18n.use(initReactI18next).init({ 

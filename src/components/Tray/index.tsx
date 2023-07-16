@@ -4,6 +4,7 @@ import { MediumText, RegularText } from "../../utils/Text";
 import fonts from "../../theme/fonts";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TrayDataType } from "../../screens/main/Home/constants";
+import { useNavigation } from "@react-navigation/native";
 
 interface TrayProps {
     label:string,
@@ -11,6 +12,8 @@ interface TrayProps {
 }
 
 const TrayComponent = ({data,label}:TrayProps) => {
+
+    const navigation = useNavigation();
 
     return (
         <View style={Styles.container}>
@@ -42,8 +45,6 @@ const Styles = StyleSheet.create({
         marginLeft:16,
         borderRadius:4,
         overflow:'hidden',
-        // borderWidth:1,
-        // borderColor:'#222425'
     },
     headContainer:{
         flexDirection:'row',

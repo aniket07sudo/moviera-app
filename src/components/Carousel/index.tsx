@@ -1,7 +1,7 @@
 import React, { createRef, useEffect, useRef, useState } from "react";
 import { Dimensions, ImageBackground,StatusBar,StyleSheet, Text, View , FlatList, ScrollView } from "react-native";
 import { useTranslation } from "react-i18next";
-import Animated, { interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import CarouselItem from "./item";
 import LinearGradient from "react-native-linear-gradient";
 import { Data, DataProps } from "../../screens/main/Home/HeroData";
@@ -10,6 +10,9 @@ import DotsComponent from "./dots";
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 const ITEM_WIDTH = SCREEN_WIDTH;
+
+const ITEM_HEIGHT = Dimensions.get('screen').height * 0.68;
+
 
 interface RefdataType {
     value: DataProps, 
@@ -23,10 +26,10 @@ const viewabilityConfig = {
 }
 
 interface CarouselProps {
-    ScrollY?:Animated.SharedValue<number>
+    // ScrollY:Animated.SharedValue<number>
 }
 
-const CarouselComponent = ({ScrollY}:CarouselProps) => {
+const CarouselComponent = ({}:CarouselProps) => {
     const ScrollX = useSharedValue<number>(0);
     const cellRefs = useRef();
     const [refData,setRefData] = useState([]);
@@ -39,6 +42,15 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
         }
     })
 
+    // const ScrollYStyles = useAnimatedStyle(() => {
+
+    //     return {
+    //         top:interpolate(ScrollY.value,[0,100],[0,50],{extrapolateLeft:Extrapolation.CLAMP})
+    //     }
+    // })
+
+
+
     useEffect(() => {
         const d = Data.map((item,index) => ({value:item,id:index}));
         
@@ -48,7 +60,6 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
         // d.forEach(item => {
         //     cellRefs[item.id] = createRef();
         // });
-        console.log("Data",d);
         
         // setRefData([...d]);
         setRefData([...Data]);
@@ -56,21 +67,15 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
 
     const _onViewableItemsChanged = useRef(props => {
         const changed = props.changed;
-        console.log("Prips",props);
 
         changed.forEach(item => {
             const cell = cellRefs[item.key];
-            console.log("Cell",cell);
             if(cell) {
                 if(item.isViewable) {
-                    console.log("Played",item);
                     
-                    // cell.current.play();
                     cell.current.startRender();
                 } else {
-                    console.log("Paused",item);
                     cell.current.removeRender();
-                    // cell.current.pause();
                 }
             }
         })
@@ -79,7 +84,7 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
     return (
         <View>
             <StatusBar barStyle={'light-content'} />
-            <View style={Styles.carouselContainer}>
+            <Animated.View style={[Styles.carouselContainer]}>
                 <AnimatedFlatlist
                     data={refData}
                     horizontal
@@ -101,7 +106,7 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
                     })}
                     viewabilityConfig={viewabilityConfig}
                     renderItem={({item,index}) => (
-                        <CarouselItem ScrollY={ScrollY} key={index} setIsSound={setIsSound} isSound={isSound} ref={cellRefs[item.id]} pause={index != 0} item={item} index={index} ScrollX={ScrollX} />
+                        <CarouselItem key={index} setIsSound={setIsSound} isSound={isSound} ref={cellRefs[item.id]} pause={index != 0} item={item} index={index} ScrollX={ScrollX} />
                     )}
                 />
                 <View style={Styles.dotsContainer}>
@@ -111,8 +116,7 @@ const CarouselComponent = ({ScrollY}:CarouselProps) => {
                         ))}
                     </View>
                 </View>
-            </View>
-            
+            </Animated.View>
         </View>
     )
 }
@@ -126,7 +130,7 @@ const Styles = StyleSheet.create({
         bottom:20
     },
     carouselContainer:{
-        position:'relative'
+        position:'relative',
     },
     dotsWrapper:{
         flexDirection:'row',
