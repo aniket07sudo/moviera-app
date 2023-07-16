@@ -14,6 +14,8 @@ import ListIcon from "../../assets/icons/BottomBar/List";
 import ProfileIcon from "../../assets/icons/BottomBar/Profile";
 import CustomTabbar from "./CustomTabbar";
 import { BlurView } from "@react-native-community/blur";
+import { BottomTabParamList } from "../../ts/types/navigation";
+
 
 const IconChooser = (name:string,color:string) => {
 
@@ -26,7 +28,7 @@ const IconChooser = (name:string,color:string) => {
         case 'Explore':
             iconUrl = <ExploreIcon color={color} />;
             break;
-        case 'My List':
+        case 'MyList':
             iconUrl = <ListIcon color={color} />;
             break;
         case 'Profile':
@@ -41,7 +43,7 @@ const IconChooser = (name:string,color:string) => {
 
 const MainNavigation = () => {
 
-    const TabBar = createBottomTabNavigator();
+    const TabBar = createBottomTabNavigator<BottomTabParamList>();
 
     return (
         <TabBar.Navigator 
@@ -63,7 +65,7 @@ const MainNavigation = () => {
         >
             <TabBar.Screen name="Home" component={HomeScreen} options={{headerShown:false}} />
             <TabBar.Screen name="Explore" component={SearchScreen} />
-            <TabBar.Screen name="My List" component={DownloadsScreen} />
+            <TabBar.Screen name="MyList" component={DownloadsScreen} />
             <TabBar.Screen name="Profile" component={ProfileScreen} />
         </TabBar.Navigator>
     )

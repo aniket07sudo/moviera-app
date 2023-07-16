@@ -1,9 +1,9 @@
-import { Text , TextStyle } from "react-native";
+import { StyleProp, Text , TextStyle, ViewStyle } from "react-native";
 import Fonts from '../theme/fonts'
 
 interface TextProps {
-    children:any,
-    styles?:TextStyle
+    children:string,
+    styles?:StyleProp<TextStyle>
 }
 
 export function RegularText({children,styles}:TextProps) {

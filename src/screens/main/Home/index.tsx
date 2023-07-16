@@ -8,16 +8,23 @@ import TrayComponent from "../../../components/Tray";
 import { TrayData } from "./constants";
 import LinearGradient from "react-native-linear-gradient";
 import { useDispatch, useSelector } from "react-redux";
+import { CompositeScreenProps, useNavigation } from "@react-navigation/native";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { BottomTabParamList, HomeScreenNavigationProps, HomeScreenProps, RootStackParamList } from "../../../ts/types/navigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 const ITEM_WIDTH = SCREEN_WIDTH;
 
 const ITEM_HEIGHT = Dimensions.get('screen').height * 0.68;
 
+
 const HomeScreen = () => {
 
     // const AppState = useSelector(state => state);
     const dispatch = useDispatch();
+
+    const navigation = useNavigation<HomeScreenProps['navigation']>();
 
     // console.log("Appstate",AppState);
     
@@ -50,11 +57,15 @@ const HomeScreen = () => {
             {/* <CarouselComponent ScrollY={ScrollY} /> */}
             <CarouselComponent />
             <Animated.View style={[Styles.content]}  >
-                <TrayComponent data={TrayData} label={'Continue Watching'} />
-                <TrayComponent data={TrayData} label={'Trending Now'} />
-                <TrayComponent data={TrayData} label={'Latest'} />
+                <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
+                <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} />
+                <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} />
             </Animated.View>
-        <Button title="Dispatch" onPress={() => dispatch({type:'CHECKY'})} />
+        {/* <Button title="Dispatch" onPress={() => dispatch({type:'CHECKY'})} /> */}
+        <Button title="Dispatch" onPress={() => navigation.navigate('HomeStack',{
+            screen:'HomeDetailsScreen',
+            params: { id:1 }
+        })} />
         </Animated.ScrollView>
         </>
     )

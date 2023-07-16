@@ -32,7 +32,9 @@ import SplashScreen from 'react-native-splash-screen';
 import AppRouter from './src/navigation/root-navigator';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StoreProvider } from './src/store/storeProvider';
-const Stack = createNativeStackNavigator();
+
+import 'react-native-gesture-handler'
+
 
 function App(): JSX.Element {
 

@@ -2,9 +2,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeStackScreen from "../screens/main/Home/navigation";
 import ProfileStack from "../screens/main/Profile/navigation";
 import Tabs from './tabbar'
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { BottomTabParamList, RootStackParamList } from "../ts/types/navigation";
 
 
-const Stack = createStackNavigator();
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
 

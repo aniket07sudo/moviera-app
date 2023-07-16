@@ -5,15 +5,18 @@ import fonts from "../../theme/fonts";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TrayDataType } from "../../screens/main/Home/constants";
 import { useNavigation } from "@react-navigation/native";
+import { HomeScreenNavigationProps, HomeScreenProps } from "../../ts/types/navigation";
+// import { HomeScreenNavigationProp } from "../../ts/types/navigation";
 
 interface TrayProps {
     label:string,
-    data:TrayDataType[]
+    data:TrayDataType[],
+    navigation:HomeScreenProps['navigation']
 }
 
-const TrayComponent = ({data,label}:TrayProps) => {
+const TrayComponent = ({data,label,navigation}:TrayProps) => {
 
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
 
     return (
         <View style={Styles.container}>
@@ -28,7 +31,7 @@ const TrayComponent = ({data,label}:TrayProps) => {
                 horizontal
                 
                 renderItem={({item,index}) => (
-                    <TouchableWithoutFeedback style={Styles.cardContainer} key={index}>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index}})} style={Styles.cardContainer} key={index}>
                         <Image source={item.image} style={Styles.imageContainer} />
                     </TouchableWithoutFeedback>
                 )}
