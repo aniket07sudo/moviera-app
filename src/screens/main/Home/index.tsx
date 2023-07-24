@@ -13,7 +13,8 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, HomeScreenNavigationProps, HomeScreenProps, RootStackParamList } from "../../../ts/types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const SCREEN_WIDTH = Dimensions.get('screen').width;
+export const SCREEN_WIDTH = Dimensions.get('screen').width;
+export const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const ITEM_WIDTH = SCREEN_WIDTH;
 
 const ITEM_HEIGHT = Dimensions.get('screen').height * 0.68;
@@ -58,14 +59,14 @@ const HomeScreen = () => {
             <CarouselComponent />
             <Animated.View style={[Styles.content]}  >
                 <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
-                <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} />
-                <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} />
+                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} /> */}
+                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} /> */}
             </Animated.View>
         {/* <Button title="Dispatch" onPress={() => dispatch({type:'CHECKY'})} /> */}
-        <Button title="Dispatch" onPress={() => navigation.navigate('HomeStack',{
+        {/* <Button title="Dispatch" onPress={() => navigation.navigate('HomeStack',{
             screen:'HomeDetailsScreen',
             params: { id:1 }
-        })} />
+        })} /> */}
         </Animated.ScrollView>
         </>
     )

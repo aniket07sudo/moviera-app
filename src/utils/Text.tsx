@@ -1,17 +1,33 @@
-import { StyleProp, Text , TextStyle, ViewStyle } from "react-native";
+import { StyleProp, Text , TextStyle, ViewStyle , View } from "react-native";
 import Fonts from '../theme/fonts'
 
 interface TextProps {
-    children:string,
-    styles?:StyleProp<TextStyle>
+    children:string | JSX.Element | JSX.Element[] | React.ReactNode,
+    styles?:StyleProp<TextStyle>,
+    box?:boolean
 }
 
-export function RegularText({children,styles}:TextProps) {
+interface BoxTextProps {
+    children:JSX.Element | JSX.Element[]
+}
+
+export function BoxText({children}:BoxTextProps) {
+
+    return (
+        <View style={{borderColor:'white',borderWidth:1,paddingLeft:2,paddingRight:2,borderRadius:4,flexDirection:'column',justifyContent:'center'}}>
+            {children}
+        </View>
+    )
+}
+
+export function RegularText({children,styles,box}:TextProps) {
 
     return (
         <Text style={[{fontFamily:Fonts.type.poppinsRegular,color:'white',fontSize:Fonts.size.font14},styles]}>{children}</Text>
     )
 }
+
+
 
 export function MediumText({children,styles}:TextProps) {
 

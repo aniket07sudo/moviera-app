@@ -30,10 +30,9 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
             <FlatList  
                 data={data}
                 horizontal
-                
                 renderItem={({item,index}) => (
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:'https://images.pexels.com/photos/5546074/pexels-photo-5546074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'}})} style={Styles.cardContainer} key={index}>
-                        <Animated.Image sharedTransitionTag={`${index}`} source={{uri:'https://images.pexels.com/photos/5546074/pexels-photo-5546074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'}} style={Styles.imageContainer} />
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:item.image}})} style={Styles.cardContainer} key={index}>
+                        <Animated.Image sharedTransitionTag={`${index}`} source={item.image} style={Styles.imageContainer} />
                     </TouchableWithoutFeedback>
                 )}
             />
@@ -62,7 +61,8 @@ const Styles = StyleSheet.create({
     imageContainer:{
         width:130,
         height:170,
-        resizeMode:'cover'
+        resizeMode:'cover',
+        overflow:"hidden"
     }
 })
 

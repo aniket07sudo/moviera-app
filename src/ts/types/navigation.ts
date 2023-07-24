@@ -4,7 +4,7 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-naviga
 
 export type HomeStackParamList = {
     HomeScreen:undefined,
-    HomeDetailsScreen: { id:number }
+    HomeDetailsScreen: { id:number , imageUrl:string | any }
 }
 
 export type RootStackParamList = {
@@ -20,8 +20,11 @@ export type BottomTabParamList = {
     Profile:undefined
 }
 
+
 export type HomeScreenNavigationProps = CompositeNavigationProp<BottomTabNavigationProp<BottomTabParamList,'Home'>,NativeStackNavigationProp<RootStackParamList>>
 export type HomeScreenProps = CompositeScreenProps<BottomTabScreenProps<BottomTabParamList,'Home'>,NativeStackScreenProps<RootStackParamList>>
+
+export type HomeDetailsScreenProps = NativeStackScreenProps<HomeStackParamList,'HomeDetailsScreen'>
 
 
 // export type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList,'HomeScreen'>
