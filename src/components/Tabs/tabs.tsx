@@ -1,6 +1,6 @@
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Tab from "./tab";
-import { TabsDataProps } from ".";
+import { TabsDataProps } from "../../screens/main/Home/Details";
 
 interface TabsProps {
     tabsData:TabsDataProps[],
@@ -13,9 +13,9 @@ export default function Tabs({tabsData,onMeasurement,onPress}:TabsProps) {
     
     return (
         <View style={Styles.overlay}>
-            {tabsData.map((tab,index) => (
-                <Tab onPress={onPress ? onPress.bind(null,index) : undefined} {...tab} onMeasurement={onMeasurement ? onMeasurement.bind(null,index) : undefined} key={index} />
-            ))}
+                {tabsData.map((tab,index) => (
+                    <Tab onPress={onPress ? onPress.bind(null,index) : undefined} {...tab} onMeasurement={onMeasurement ? onMeasurement.bind(null,index) : undefined} key={index} />
+                ))}
         </View>
     )
 }
@@ -23,6 +23,6 @@ export default function Tabs({tabsData,onMeasurement,onPress}:TabsProps) {
 const Styles = StyleSheet.create({
     overlay:{
         ...StyleSheet.absoluteFillObject,
-        flexDirection:'row'
+        flexDirection:'row',
     }
 })

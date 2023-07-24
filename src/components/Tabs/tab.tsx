@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { MediumText } from "../../utils/Text";
-import { useEffect } from "react";
-import { TAB_HEIGHT } from ".";
+import { Spacing } from "../../theme/spacing";
+import metrics from "../../theme/metrics";
 
 interface TabProps {
     title:string,
     onMeasurement?:(measurement:number) => void
-    onPress?:() => void
+    onPress?:() => void,
 }
 
 export default function Tab({title,onMeasurement,onPress}:TabProps) {
@@ -26,9 +26,7 @@ const Styles = StyleSheet.create({
         height:30,
         justifyContent:'center',
         alignItems:'center',
-        marginRight:8,
-        paddingLeft:6,
-        paddingRight:6
+        width:(metrics.screenWidth / 3) - (Spacing.screenPadding)
     },
     text:{
         fontSize:14

@@ -30,19 +30,24 @@ const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.45;
 const PLAY_ICON_WIDTH = 50;
 const PLAY_ICON_HEIGHT = 50;
 
-const tags = [
-    {
-        id:0,
-        label:'Action'
-    },
+export interface TabsDataProps {
+    id:number,
+    title:string
+}
+
+export const tabsData : TabsDataProps[] = [
     {
         id:1,
-        label:'Adventure'
+        title:'Episode'
     },
     {
         id:2,
-        label:'Comedy'
-    }
+        title:'Similar'
+    },
+    {
+        id:3,
+        title:'About'
+    },
 ]
 
 const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
@@ -135,7 +140,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                 <View style={{marginTop:Spacing.headingTextBottomMargin}}>
                     <RegularText styles={{fontSize:fonts.size.font12,textAlign:'left'}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos odit nisi doloribus fugiat rem iste harum qui error quo soluta.</RegularText>
                 </View>
-                <Tabs />
+                <Tabs tabsData={tabsData} />
             </Animated.View>
         </Animated.ScrollView>
     )

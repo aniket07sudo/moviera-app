@@ -59,8 +59,8 @@ const HomeScreen = () => {
             <CarouselComponent />
             <Animated.View style={[Styles.content]}  >
                 <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
-                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} /> */}
-                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} /> */}
+                <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} />
+                <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} />
             </Animated.View>
         {/* <Button title="Dispatch" onPress={() => dispatch({type:'CHECKY'})} /> */}
         {/* <Button title="Dispatch" onPress={() => navigation.navigate('HomeStack',{
