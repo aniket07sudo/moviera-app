@@ -1,9 +1,11 @@
+import { IUistate } from "../../store/ui/reducer";
 import { IAuthState } from "./auth_interfaces";
 import { IUserState } from "./user_interfaces";
 
 export interface IAppState {
     auth:IAuthState,
-    user:IUserState
+    user:IUserState,
+    ui:IUistate
 }
 
 export interface IAction {

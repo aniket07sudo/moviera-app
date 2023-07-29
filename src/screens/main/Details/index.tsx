@@ -1,31 +1,36 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { Button, ImageBackground, Pressable, StyleSheet, Text, View , Image } from "react-native";
-import { HomeDetailsScreenProps, HomeStackParamList } from "../../../../ts/types/navigation";
-import Animated, { Easing, FadeIn, FadeInDown, FadeInRight, FadeInUp } from "react-native-reanimated";
-import { Data, DataProps } from "../HeroData";
-import { SCREEN_HEIGHT } from "..";
+import { Button, ImageBackground, Pressable, StyleSheet, Text, View , Image, ScrollView, Platform, StatusBar } from "react-native";
+import { HomeDetailsScreenProps, HomeStackParamList } from "../../../ts/types/navigation";
+import Animated, { Easing, FadeIn, FadeInDown, FadeInRight, FadeInUp, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import { Data, DataProps } from "../Home/HeroData";
+import { SCREEN_HEIGHT } from "../Home";
 import LinearGradient from "react-native-linear-gradient";
-import { Colors } from "../../../../theme/colors";
-import { BoxText, MediumText, RegularText, SemiBold } from "../../../../utils/Text";
-import fonts from "../../../../theme/fonts";
-import { Spacing } from "../../../../theme/spacing";
-import {PrimaryOvalButton, SecondaryOvalButton} from "../../../../components/Buttons/OvalButtons";
-import BookmarkIcon from "../../../../assets/icons/shared/bookmark";
-import DotIcon from "../../../../assets/icons/shared/Circle";
-import StarIcon from "../../../../assets/icons/shared/star";
-import LikeIcon from "../../../../assets/icons/shared/Like";
-import PlusIcon from "../../../../assets/icons/shared/plus";
-import metrics from "../../../../theme/metrics";
-import BackIcon from "../../../../assets/icons/shared/back";
+import { Colors } from "../../../theme/colors";
+import { BoxText, MediumText, RegularText, SemiBold } from "../../../utils/Text";
+import fonts from "../../../theme/fonts";
+import { Spacing } from "../../../theme/spacing";
+import DotIcon from "../../../assets/icons/shared/Circle";
+import StarIcon from "../../../assets/icons/shared/star";
+import LikeIcon from "../../../assets/icons/shared/Like";
+import PlusIcon from "../../../assets/icons/shared/plus";
+import metrics from "../../../theme/metrics";
+import BackIcon from "../../../assets/icons/shared/back";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ShareIcon from "../../../../assets/icons/shared/share";
-import Tabs from "../../../../components/Tabs";
+import ShareIcon from "../../../assets/icons/shared/share";
+import Tabs from "../../../components/Tabs";
+import Episode from "./Seasons";
+import Player from "../../../components/Player";
+import PreviewPlayer from "../../../components/PreviewPlayer";
+import { useDispatch, useSelector } from "react-redux";
+import { IAppState } from "../../../ts/interfaces";
+import { useNavigation } from "@react-navigation/native";
+import Orientation from "react-native-orientation-locker";
 
 const AnimatedImageBackgrond = Animated.createAnimatedComponent(ImageBackground);
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.45;
+const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.40;
 
 const PLAY_ICON_WIDTH = 50;
 const PLAY_ICON_HEIGHT = 50;
@@ -36,10 +41,10 @@ export interface TabsDataProps {
 }
 
 export const tabsData : TabsDataProps[] = [
-    {
-        id:1,
-        title:'Episode'
-    },
+    // {
+    //     id:1,
+    //     title:'Episode'
+    // },
     {
         id:2,
         title:'Similar'
@@ -53,6 +58,10 @@ export const tabsData : TabsDataProps[] = [
 const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
     // console.log("imageUrl",imageUrl);
     const [details,setDetails] = useState<DataProps>();
+    const isPreviewReady = useSharedValue(0);
+
+    const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
+    const dispatch = useDispatch();
 
     const Padding = useSafeAreaInsets();
 
@@ -63,34 +72,55 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
         setDetails(findDetails);
     },[])
 
-    const onPress = () => {
+    const gotoPlayer = () => {
         console.log("Pressed");
+        Orientation.lockToLandscapeLeft();
+        navigation.navigate('HomeStack',{screen:'VideoPlayer'});
+        // dispatch({type:'PLAYER_MODAL',payload:{playerUrl:'',modalState:true}});
+
     }
 
     const goBack = () => {
         navigation.goBack();
     }
+
+    const animatedPreviewStyles = useAnimatedStyle(() => {
+
+        return {
+            opacity:isPreviewReady.value
+        }
+    })
     
     return (
-        <Animated.ScrollView style={{flex:1}}>
-                <View style={Styles.imageContainer}>
-                    <Animated.View entering={FadeIn.delay(500).duration(300)} style={[Styles.headerContainer,{top:Padding.top}]}>
-                        <Pressable onPress={goBack}>
-                            <BackIcon width={28} height={28} color={Colors.white} />
-                        </Pressable>
-                        <Pressable>
-                            <ShareIcon width={24} height={24} color={Colors.white} />
-                        </Pressable>
+        <>
+        <StatusBar backgroundColor={Colors.secondary} />
+        <Animated.View entering={FadeIn.delay(500).duration(300)} style={[Styles.headerContainer,{top:Padding.top}]}>
+                <Pressable onPress={goBack}>
+                    <BackIcon width={28} height={28} color={Colors.white} />
+                </Pressable>
+                <Pressable>
+                    <ShareIcon width={24} height={24} color={Colors.white} />
+                </Pressable>
+            </Animated.View>
+        <ScrollView style={{flex:1}}>
+        <Pressable onPress={gotoPlayer}>
+
+            <View style={[Styles.imageContainer]}>
+                {/* <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}> */}
+                    {/* <View style={Styles.playIconContainer}>
+                        <Image style={Styles.playIcon} source={require('../../../assets/png/play_white.png')} />
+                    </View> */}
+                {/* </Pressable> */}
+                
+                <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
+                    <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
+                        <PreviewPlayer isPreviewReady={isPreviewReady} />
                     </Animated.View>
-                    <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}>
-                        <View style={Styles.playIconContainer}>
-                            <Image style={Styles.playIcon} source={require('../../../../assets/png/play_white.png')} />
-                        </View>
-                    </Pressable>
-                    <AnimatedLinearGradient entering={FadeInDown.delay(500).duration(500)} style={Styles.bottomGradient} colors={['transparent',Colors.secondary]} />
-                    <Animated.Image style={Styles.Image}  source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
-                </View>
-            <Animated.View entering={FadeInDown.delay(500).duration(200).easing(Easing.linear)} style={Styles.mainContainer}>
+                <AnimatedLinearGradient entering={FadeInDown.delay(400).duration(400)} style={Styles.bottomGradient} colors={['transparent',Colors.secondary]} />
+            </View>
+            </Pressable>
+
+            <Animated.View  style={Styles.mainContainer}>
                 <View style={Styles.textDetailsContainer}>
                     <View style={Styles.textContainer}>
                         <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
@@ -119,7 +149,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                                     {/* <Image style={{width:20,height:20}} source={require('../../../../assets/png/18_plus.png')} /> */}
                                     <View style={Styles.iconContainer}>
                                         {/* <Image style={Styles.tagIcon} source={require('../../../../assets/png/hd.png')} /> */}
-                                        <Image style={Styles.tagIcon} source={require('../../../../assets/png/4k.png')} />
+                                        <Image style={Styles.tagIcon} source={require('../../../assets/png/4k.png')} />
                                     </View>
                                     <RegularText styles={{fontSize:fonts.size.font12}}>2h 2m</RegularText>
                                 </View>
@@ -127,22 +157,21 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                             <View style={Styles.rating}>
                                 <StarIcon width={20} height={20} color={Colors.ratingColor} />
                                 <MediumText styles={{fontSize:fonts.size.font12}}>4.5</MediumText>
-                                <Image style={{width:36,height:18}} source={require('../../../../assets/png/imdb.png')} />
+                                <Image style={{width:36,height:18}} source={require('../../../assets/png/imdb.png')} />
                             </View>
                         </View>
                     </View>
-                   
                 </View>
-                {/* <View style={Styles.buttons}>
-                    <PrimaryOvalButton source={require('../../../../assets/png/play_white.png')} label="Play" onPress={onPress} />
-                    <SecondaryOvalButton source={require('../../../../assets/png/download_white.png')} label="Download" onPress={onPress} />
-                </View> */}
+
                 <View style={{marginTop:Spacing.headingTextBottomMargin}}>
                     <RegularText styles={{fontSize:fonts.size.font12,textAlign:'left'}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos odit nisi doloribus fugiat rem iste harum qui error quo soluta.</RegularText>
                 </View>
-                <Tabs tabsData={tabsData} />
             </Animated.View>
-        </Animated.ScrollView>
+                <Episode />
+                <Tabs tabsData={tabsData} />
+                {/* <Player /> */}
+        </ScrollView>
+        </>
     )
 }
 
@@ -150,7 +179,8 @@ const Styles = StyleSheet.create({
     imageContainer:{
         height:IMAGE_HEIGHT,
         width:'100%',
-        position:'relative'
+        position:'relative',
+        backgroundColor:Colors.secondary
     },
     iconContainer:{
         width:26,
@@ -174,13 +204,14 @@ const Styles = StyleSheet.create({
         justifyContent:'center'
     },
     headerContainer:{
+        flex:1,
         position:'absolute',
         zIndex:5,
         flexDirection:'row',
         justifyContent:'space-between',
         width:'100%',
         paddingLeft:Spacing.buttonLeftPadding,
-        paddingRight:Spacing.buttonLeftPadding
+        paddingRight:Spacing.buttonLeftPadding,
     },
     playIcon:{
         width:PLAY_ICON_WIDTH - PLAY_ICON_WIDTH / 1.8,
@@ -207,7 +238,8 @@ const Styles = StyleSheet.create({
     },
     Image:{
         width:'100%',
-        resizeMode:'cover'
+        height:'100%',
+        resizeMode:'cover',
     },
     matchPercentage:{
         color:Colors.sucess,
@@ -223,7 +255,6 @@ const Styles = StyleSheet.create({
     },
     mainContainer:{
         backgroundColor:Colors.secondary,
-        height:'100%',
         paddingLeft:Spacing.screenPadding,
         paddingRight:Spacing.screenPadding
     },
@@ -256,7 +287,6 @@ const Styles = StyleSheet.create({
     },
     buttons:{
         flexDirection:'row',
-        // justifyContent:'center',
         gap:20,
         marginTop:Spacing.headingTextBottomMargin,
         marginBottom:Spacing.headingTextBottomMargin

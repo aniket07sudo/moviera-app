@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import Tab from "./tab";
-import { TabsDataProps } from "../../screens/main/Home/Details";
+import { TabsDataProps } from "../../screens/main/Details";
 
 interface TabsProps {
     tabsData:TabsDataProps[],

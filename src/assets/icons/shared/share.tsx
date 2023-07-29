@@ -12,7 +12,7 @@ function ShareIcon({width,height,color}:ShareIconProps) {
     <Svg
       width={width}
       height={height}
-    //   fill="none"
+      fill="none"
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"

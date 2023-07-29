@@ -16,7 +16,7 @@ const AppNavigator = () => {
         <Stack.Navigator initialRouteName="HomeTabs">
             <Stack.Screen name="HomeTabs" component={Tabs} options={{headerShown:false}} />
             <Stack.Screen name="HomeStack" options={{headerShown:false}} component={HomeStackScreen} />
-            <Stack.Screen name="ProfileStack" component={ProfileStack} />
+            <Stack.Screen name="ProfileStack" options={{headerShown:false}} component={ProfileStack} />
         </Stack.Navigator>
     )
 }

@@ -34,12 +34,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StoreProvider } from './src/store/storeProvider';
 
 import 'react-native-gesture-handler'
+import Orientation from 'react-native-orientation-locker';
 
 
 function App(): JSX.Element {
 
   useEffect(()=>{
-    SplashScreen.hide()
+    SplashScreen.hide();
+    // Orientation.lockToPortrait();
  },[])
 
   return (

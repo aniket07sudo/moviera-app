@@ -138,7 +138,7 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound}:I
                         muted={!isSound}
                         paused={paused || !screenIsFocused}
                         ignoreSilentSwitch={'ignore'}
-                        poster={'../../../assets/images/Hero.jpeg'}
+                        // poster={'../../../assets/images/Hero.jpeg'}
                         repeat
                         playWhenInactive
                         resizeMode={'cover'}

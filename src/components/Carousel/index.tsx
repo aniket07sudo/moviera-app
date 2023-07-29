@@ -139,12 +139,6 @@ const Styles = StyleSheet.create({
         width:5 * 20,
         justifyContent:'center'
     },
-    // statusBarGradient:{
-    //     position:'absolute',
-    //     zIndex:1,
-    //     width:SCREEN_WIDTH,
-    //     height:40,
-    // },
 })
 
 export default CarouselComponent;

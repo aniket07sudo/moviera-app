@@ -6,6 +6,7 @@ import {combineReducers, createStore} from 'redux'
 import {initialState as AuthState} from './auth/reducer'
 import { Provider, createStoreHook } from 'react-redux'
 import { IAppState } from '../ts/interfaces'
+import UiReducer from './ui/reducer'
 
 interface StoreProviderProps {
     children:string | JSX.Element | JSX.Element[]
@@ -13,7 +14,8 @@ interface StoreProviderProps {
 
 export const rootReducer = combineReducers({
     auth:AuthReducer,
-    user:UserReducer
+    user:UserReducer,
+    ui:UiReducer
 })
 
 export const store = createStore(rootReducer);

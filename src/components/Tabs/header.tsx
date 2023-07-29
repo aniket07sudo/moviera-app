@@ -4,7 +4,7 @@ import Tabs from "./tabs";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming , scrollTo } from "react-native-reanimated";
 import { TAB_HEIGHT } from ".";
-import { TabsDataProps } from "../../screens/main/Home/Details";
+import { TabsDataProps } from "../../screens/main/Details";
 import { SCREEN_WIDTH } from "../../screens/main/Home";
 import metrics from "../../theme/metrics";
 
@@ -50,9 +50,6 @@ export default function TabHeader({data,ScrollX,ScrollRef}:TabHeaderProps) {
     
 
     const animatedIndicatorStyle = useAnimatedStyle(() => {
-        console.log("animated measurements",measurements,transforms);
-        console.log("Scrol",ScrollX.value);
-
         
         const width = interpolate(index.value,
             data.map((_,i) => i),
