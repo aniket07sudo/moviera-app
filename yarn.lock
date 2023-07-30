@@ -2369,6 +2369,11 @@
   "resolved" "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.12.tgz"
   "version" "7.0.12"
 
+"@types/lodash@^4.14.196":
+  "integrity" "sha512-22y3o88f4a94mKljsZcanlNWPzO0uBsBdzLAngf2tp533LzZcQzb6+eZPJ+vCTt+bqF2XnvT9gejTLsAcJAJyQ=="
+  "resolved" "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.196.tgz"
+  "version" "4.14.196"
+
 "@types/node@*":
   "integrity" "sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg=="
   "resolved" "https://registry.npmjs.org/@types/node/-/node-20.3.1.tgz"
@@ -7346,6 +7351,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   "version" "18.2.0"
 
+"react-native-awesome-slider@^2.4.2":
+  "integrity" "sha512-/1FUAtcO6dGfzynGBY6/Oc0nmsnrcv0XVWV5y8zsXLA4vUMn78Obkl0ZKjZeG/Tvd9rA0vnOT299L09C5bCV/g=="
+  "resolved" "https://registry.npmjs.org/react-native-awesome-slider/-/react-native-awesome-slider-2.4.2.tgz"
+  "version" "2.4.2"
+
 "react-native-codegen@^0.71.5":
   "integrity" "sha512-rfsuc0zkuUuMjFnrT55I1mDZ+pBRp2zAiRwxck3m6qeGJBGK5OV5JH66eDQ4aa+3m0of316CqrJDRzVlYufzIg=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.71.5.tgz"
@@ -7356,7 +7366,7 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
-"react-native-gesture-handler@^2.12.0", "react-native-gesture-handler@>= 1.0.0":
+"react-native-gesture-handler@^2.12.0", "react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@>=2.0.0":
   "integrity" "sha512-rr+XwVzXAVpY8co25ukvyI38fKCxTQjz7WajeZktl8qUPdh1twnSExgpT47DqDi4n+m+OiJPAnHfZOkqqAQMOg=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.12.0.tgz"
   "version" "2.12.0"
@@ -7382,7 +7392,7 @@
   "resolved" "https://registry.npmjs.org/react-native-orientation-locker/-/react-native-orientation-locker-1.5.0.tgz"
   "version" "1.5.0"
 
-"react-native-reanimated@^3.3.0", "react-native-reanimated@>= 1.0.0":
+"react-native-reanimated@^3.3.0", "react-native-reanimated@>= 1.0.0", "react-native-reanimated@>=3.0.0":
   "integrity" "sha512-LzfpPZ1qXBGy5BcUHqw3pBC0qSd22qXS3t8hWSbozXNrBkzMhhOrcILE/nEg/PHpNNp1xvGOW8NwpAMF006roQ=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.3.0.tgz"
   "version" "3.3.0"
