@@ -44,7 +44,7 @@ const Styles = StyleSheet.create({
     },
     Button:{
         // width:metrics.screenWidth * 0.4,
-        maxWidth:200,
+        // maxWidth:200,
         // width:'100%',
         flex:1,
         paddingTop:Spacing.buttonTopPadding,

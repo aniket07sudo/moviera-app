@@ -1,7 +1,7 @@
 import { Alert, Button, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { PanGestureHandler, TapGestureHandler ,  } from 'react-native-gesture-handler';
 import Animated, { cancelAnimation, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
-import VideoPlayer from 'react-native-video'
+import VideoPlayer, { TextTrackType } from 'react-native-video'
 import metrics from '../../theme/metrics';
 import { MediumText } from '../../utils/Text';
 import { useEffect, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export default function Player() {
     const [play,setPlay] = useState(true);
     const navigation = useNavigation();
 
-    const cacheValue = useSharedValue(20);
+    const cacheValue = useSharedValue(0);
     // const [currentTime,setCurrentTime] = useState();
 
     console.log("Modal Visible",modalVisible);
@@ -65,15 +65,21 @@ export default function Player() {
         navigation.goBack();
     }
 
-    const onSliderChange = (data) => {
+    const onSlideComplete = (data) => {
         console.log("New Value",data);
-        // videoRef.current.seek(data,50);
+        if(videoRef.current) {
+            videoRef.current.seek(data,50);
+        }
         sliderProgress.value = data;
-
+        setPlay(true);
         // setCurrentProgress(data);
 
         // console.log("Seek Time",data.seekTime);
         
+    }
+
+    const _onSlideStart = () => {
+        setPlay(false);
     }
 
     const _onLoad = (data) => {
@@ -135,22 +141,22 @@ export default function Player() {
                         <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT}} colors={['rgba(0,0,0,0.5)','transparent']}>
                             <View style={Styles.headerContainer}>
                                 <Pressable onPress={handleBack} style={Styles.cancelIcon}>
-                                    <Image style={{width:'100%',height:'100%'}} source={require('../../assets/png/cross.png')} />
+                                    <Image style={{width:20,height:20}} source={require('../../assets/png/cross.png')} />
                                 </Pressable>
                                 <Pressable style={{width:24,height:24}}>
-                                    <Image style={{width:'100%',height:'100%'}} source={require('../../assets/png/padlock.png')} />
+                                    <Image style={{width:24,height:24}} source={require('../../assets/png/padlock.png')} />
                                 </Pressable>
                             </View>
                         </LinearGradient>
                         <View style={Styles.centerOptions}>
                             <Pressable onPress={handlePrevious} style={Styles.screenOptions}>
-                                <Image style={{width:'100%',height:'100%'}} source={require('../../assets/png/back.png')} />
+                                <Image style={{width:44,height:44}} source={require('../../assets/png/back.png')} />
                             </Pressable>
                             <Pressable onPress={handlePlay} style={Styles.screenOptions}>
-                                <Image style={{width:'100%',height:'100%'}} source={require('../../assets/png/video_play.png')} />
+                                <Image style={{width:44,height:44}} source={require('../../assets/png/video_play.png')} />
                             </Pressable>
                             <Pressable style={Styles.screenOptions}>
-                                <Image style={{width:'100%',height:'100%'}}  source={require('../../assets/png/next.png')} />
+                                <Image style={{width:44,height:44}} resizeMode='contain'  source={require('../../assets/png/next.png')} />
                             </Pressable>
                         </View>
                             <View style={Styles.bottomOptions}>
@@ -162,8 +168,10 @@ export default function Player() {
                                     minimumValue={minValue}
                                     maximumValue={maxValue}
                                     sliderHeight={7}
-                                    onValueChange={onSliderChange}
+                                    // onValueChange={onSliderChange}
                                     // cache={cacheValue}
+                                    onSlidingComplete={onSlideComplete}
+                                    onSlidingStart={_onSlideStart}
                                     theme={{
                                         cacheTrackTintColor:'green',
                                         minimumTrackTintColor:Colors.primary,
@@ -180,12 +188,30 @@ export default function Player() {
                         fullscreenAutorotate={true}
                         fullscreenOrientation='landscape'
                         onLoad={_onLoad}
+                        
+                        textTracks={[
+                            {
+                                title:'English',
+                                language:'en',
+                                type:TextTrackType.VTT,
+                                uri:'http://192.168.0.104:3000/subtitle_en.vtt'
+                            }
+                        ]}
+                        selectedTextTrack={{
+                            type:'language',
+                            value:'en'
+                        }}
+                        
+                        // selectedVideoTrack={{
+                        //     type:'resolution',
+                        //     value:1080
+                        // }}
                         // onFullscreenPlayerDidDismiss={exitFullScreen}
                         onProgress={handleProgress}
                         ref={videoRef}                    
                         // fullscreenOrientation='landscape'
                         // source={{uri:'http://192.168.0.103:3000/assets/videos/output.m3u8',
-                        source={{uri:'http://192.168.0.104:3000/outputs/output_720p.m3u8'}}
+                        source={{uri:'http://192.168.0.104:3000/outputs/output_480p.m3u8',type:'m3u8'}}
                             // source={{uri:'http://profficialsite.origin.mediaservices.windows.net/5ab94439-5804-4810-b220-1606ddcb8184/tears_of_steel_1080p-m3u8-aapl.ism/manifest(format=m3u8-aapl)',
                             // type:'m3u8'
                             // source={{uri:'https://res.cloudinary.com/anikets/video/upload/v1689084298/video4_yne8wm.mp4'
@@ -208,7 +234,7 @@ const Styles = StyleSheet.create({
     videoContainer:{
         flex:1,
         backgroundColor:'black',
-        width:metrics.screenHeight - (StatusBar.currentHeight / 2),
+        // width:metrics.screenHeight - (StatusBar.currentHeight / 2),
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
@@ -219,11 +245,11 @@ const Styles = StyleSheet.create({
         aspectRatio:16 / 9,
         ...Platform.select({
             ios:{
-                width:'100%',
+                width:metrics.screenHeight,
                 // height:'100%',
             },
             android:{
-                width:'100%',
+                width:metrics.screenHeight,
                 // height:'100%',
 
             }
