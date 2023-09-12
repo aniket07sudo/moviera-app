@@ -1,10 +1,10 @@
-import { Alert, Button, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { PanGestureHandler, TapGestureHandler ,  } from 'react-native-gesture-handler';
-import Animated, { cancelAnimation, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
-import VideoPlayer, { TextTrackType } from 'react-native-video'
+import Animated, { FadeIn, cancelAnimation, runOnJS, runOnUI, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import VideoPlayer, { VideoProperties } from 'react-native-video'
 import metrics from '../../theme/metrics';
-import { MediumText } from '../../utils/Text';
-import { useEffect, useRef, useState } from 'react';
+import { MediumText, RegularText } from '../../utils/Text';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Orientation from 'react-native-orientation-locker';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,93 +12,200 @@ import { IAppState } from '../../ts/interfaces';
 import { Colors } from '../../theme/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {Slider} from 'react-native-awesome-slider'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { secToMinSec } from '../../utils/conversions';
+import fonts from '../../theme/fonts';
+import BackIcon from '../../assets/icons/shared/back';
+import axios from 'axios';
+import { ICaption, parseVtt } from '../../utils/parseVtt';
+import { CustomVideoProperties } from '../../ts/types/video';
+import VideoSlider from './slider';
+import BottomOptions from './bottomOptions';
+import OverlayOptions from './OverlayOptions';
 
 const HEADER_HEIGHT = 80;
 const CENTER_HEIGHT = 50;
 const BOTTOM_HEIGHT = 100;
 
+
+
+
 export default function Player() {
 
-    const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
-    // const dispatch = useDispatch();
-    const videoRef = useRef();
+    console.log("---------------------[Player Rerender]---------------------");    
+
+    // const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
     const isOptionsShown = useSharedValue(0);
-    const [currentProgress,setCurrentProgress] = useState(0);
+    // const [isBuffering,setIsBuffering] = useState(false);
+    const isBuffering = useSharedValue(0);
+    // const [currentProgress,setCurrentProgress] = useState(0);
+    const currentTime = useSharedValue(0);
     const sliderProgress = useSharedValue(0);
     const minValue = useSharedValue(0);
     const maxValue = useSharedValue(0);
+    const videoPlay = useSharedValue(0);
     const [play,setPlay] = useState(true);
+    // const [currentLanguage,setCurrentLanguage] = useState('eng');
     const navigation = useNavigation();
-
     const cacheValue = useSharedValue(0);
-    // const [currentTime,setCurrentTime] = useState();
+    const [activeSubtitle,setActiveSubtitle] = useState<ICaption[]>([]);
+    const [currentCaption,setCurrentCaption] = useState('');
+    const videoRef = useRef(null);
 
-    console.log("Modal Visible",modalVisible);
-    
+
 
     useEffect(() => {
         if(videoRef.current) {
-
             videoRef.current.presentFullscreenPlayer();
         }
         Orientation.lockToLandscapeLeft();
         console.log("Initial Orientation",Orientation.getInitialOrientation());
         if(Orientation.getInitialOrientation() == 'PORTRAIT') {
             Orientation.lockToLandscapeLeft();
-        console.log("After Orientation",Orientation.getInitialOrientation());
-
+            // console.log("After Orientation",Orientation.getInitialOrientation());
         }
+       
         return () => {
-        // Orientation.lockToPortrait();
-        Orientation.lockToPortrait();
-            // Orientation.removeOrientationListener(handleOrientation);
+            Orientation.lockToPortrait();
         }
     },[])
 
-    const ErrorHandle = (e) => {
-        console.log("Handle",e);
-    }
 
-    const handleBack = () => {
+    // const updateSubtitle = (time:number) => {
+
+    //     console.log("Subtitle",time,activeSubtitle);
+    //     const caption = activeSubtitle.find(sub => sub.start <= time && sub.end >= time);
+    //     console.log("Caption",caption?.content);
+        
+    //     setCurrentCaption(caption?.content);
+        
+    // }
+
+    // const ErrorHandle = (e) => {
+    //     console.log("Handle",e);
+    // }
+
+    const handleBack = useCallback(() => {
         navigation.goBack();
-    }
+    },[])
 
     const onSlideComplete = (data) => {
-        console.log("New Value",data);
-        if(videoRef.current) {
-            videoRef.current.seek(data,50);
-        }
+        'worklet'
+         
         sliderProgress.value = data;
-        setPlay(true);
-        // setCurrentProgress(data);
 
-        // console.log("Seek Time",data.seekTime);
+        console.log("Slide Complete",data);
+        // isOptionsShown.value = withSequence(withTiming(1,{duration:400}),withDelay(2000,withTiming(0,{duration:400})));        
+        // isOptionsShown.value = withTiming(1);        
+        // sliderProgress.value = data;
+    }
+
+    const _onSlideComplete = useCallback((data) => {
+        sliderProgress.value = data;
+        // runOnUI(onSlideComplete)(data);
+        if(videoRef.current) {
+            videoRef.current.seek(data);
+            // setPlay(!play);
+
+        }
+        setPlay(true);
+    },[])
+
+    const onSlideStart = () => {    
+        'worklet'
+        isOptionsShown.value = 1;
         
     }
 
-    const _onSlideStart = () => {
+    const _onSlideStart = useCallback(() => {
+        console.log("Slide start");
+        runOnUI(onSlideStart);
         setPlay(false);
-    }
+    },[])
+
+    const onValueChange = useCallback((data) => {
+        console.log("Scrub",data);
+        sliderProgress.value = data;
+        
+    },[])
 
     const _onLoad = (data) => {
+        console.log("Data",data);
         maxValue.value = data.duration;
+        videoPlay.value = 1;
+        
     }
 
     const activateHandle = () => {
-        // console.log("Handle");
         console.log("Shared Value Before",isOptionsShown.value);
-        // if(isOptionsShown.value == 1) {
-        //     isOptionsShown.value = withTiming(0);
-        //     return;
-        // }
         
-        isOptionsShown.value = withSequence(withTiming(1,{duration:500}),withDelay(2000,withTiming(0,{duration:600})));
+        isOptionsShown.value = withSequence(withTiming(1,{duration:400}),withDelay(2000,withTiming(0,{duration:400})));
         console.log("Shared Value After",isOptionsShown.value);
         
         
         // dispatch({type:'PLAYER_MODAL',payload:{playerUrl:'',playerModal:false}});
+    }
+
+    function handleProgress(progressData) {
+        'worklet';
+        // currentTime
+        sliderProgress.value = progressData.currentTime;
+        cacheValue.value = progressData.playableDuration;
+        // updateSubtitle(progressData.currentTime);
+        
+    }
+
+    const handleTenSec = (type:string) => {
+        console.log("Type",type);
+        if(type == 'backward') {
+            videoRef.current.seek(sliderProgress.value - 10);
+        } 
+        if(type == 'forward') {
+            videoRef.current.seek(sliderProgress.value + 10);
+        }
+        
+    }
+
+    const HandleBuffer = (e) => {
+        isBuffering.value = e.isBuffering;
+    }
+
+    const updateProgress = (progressData) => {
+        sliderProgress.value = progressData.currentTime;
+        cacheValue.value = progressData.playableDuration;
+        // runOnUI(handleProgress)(progressData);
+    }
+
+
+    const handlePlay = (videoPlay) => {
+        'worklet'
+        console.log("Handle Play UI",videoPlay.value);
+        // setPlay(!play);
+        // videoPlay.value = withTiming(0);
+        // if (videoPlay.value === 0) {
+        //     videoPlay.value = withDelay(1000,withTiming(1,{duration:100})); // Or whatever number you intend to assign
+        //   } else {
+        //     videoPlay.value = withDelay(100,withTiming(0,{duration:1000})); // Toggle to the other number
+        //   }
+
+        // runOnJS(handleOnJS)(videoPlay.value)
+
+       
+    }
+
+    const updatePlay = (videoPlay) => {
+        console.log("Handle Play");
+        
+        runOnUI(handlePlay)(videoPlay);
+    }
+    
+    const togglePlay = () => {
+        setPlay(!play);
+        runOnUI(handlePlay)(videoPlay);
+    }
+
+    const seekHandle = () => {
+
     }
 
     const videoControlsStyle = useAnimatedStyle(() => {
@@ -107,205 +214,168 @@ export default function Player() {
         }
     })
 
-    const filterAnimation = useAnimatedStyle(() => {
-        return {
-            opacity:isOptionsShown.value
-        }
-    })
-
-    const handlePlay = () => {
-        console.log("Handle Play");
-        setPlay(!play);
+    const onLoadStart = () => {
+        isBuffering.value = 0;
     }
-
-    const handlePrevious = () => {
-        console.log("Handle Previous");
-    }
-
-    const handleProgress = (progressData) => {
-        console.log("Progress Data",progressData);
-        // sliderProgress.value = ( progressData.currentTime / progressData.seekableDuration ) * 100;
-        sliderProgress.value = progressData.currentTime;
-        setCurrentProgress(progressData.currentTime);
-        cacheValue.value = progressData.playableDuration;
-    }
+    
 
     return (
         <>
-        <StatusBar hidden />
-        <View style={{backgroundColor:'black',flex:1,position:'relative'}}>
-            <TapGestureHandler numberOfTaps={1} onActivated={activateHandle} >
-                <Animated.View style={[Styles.videoContainer]}>
-                    <Animated.View style={[Styles.videoFilter,filterAnimation]} />
-                    <Animated.View style={[Styles.videoControls,videoControlsStyle]}>
-                        <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT}} colors={['rgba(0,0,0,0.5)','transparent']}>
-                            <View style={Styles.headerContainer}>
-                                <Pressable onPress={handleBack} style={Styles.cancelIcon}>
-                                    <Image style={{width:20,height:20}} source={require('../../assets/png/cross.png')} />
-                                </Pressable>
-                                <Pressable style={{width:24,height:24}}>
-                                    <Image style={{width:24,height:24}} source={require('../../assets/png/padlock.png')} />
-                                </Pressable>
-                            </View>
-                        </LinearGradient>
-                        <View style={Styles.centerOptions}>
-                            <Pressable onPress={handlePrevious} style={Styles.screenOptions}>
-                                <Image style={{width:44,height:44}} source={require('../../assets/png/back.png')} />
-                            </Pressable>
-                            <Pressable onPress={handlePlay} style={Styles.screenOptions}>
-                                <Image style={{width:44,height:44}} source={require('../../assets/png/video_play.png')} />
-                            </Pressable>
-                            <Pressable style={Styles.screenOptions}>
-                                <Image style={{width:44,height:44}} resizeMode='contain'  source={require('../../assets/png/next.png')} />
-                            </Pressable>
-                        </View>
-                            <View style={Styles.bottomOptions}>
-                            <LinearGradient style={{...StyleSheet.absoluteFillObject,height:BOTTOM_HEIGHT}} colors={['transparent','rgba(0,0,0,0.5)']}>
-                                {/* <Text>{secToMinSec(currentProgress)}</Text> */}
-                                <Slider
-                                    style={Styles.slider} 
-                                    progress={sliderProgress}
-                                    minimumValue={minValue}
-                                    maximumValue={maxValue}
-                                    sliderHeight={7}
-                                    // onValueChange={onSliderChange}
-                                    // cache={cacheValue}
-                                    onSlidingComplete={onSlideComplete}
-                                    onSlidingStart={_onSlideStart}
-                                    theme={{
-                                        cacheTrackTintColor:'green',
-                                        minimumTrackTintColor:Colors.primary,
-                                        maximumTrackTintColor:Colors.grey
-                                    }}
-                                />
-                                {/* <Text>{secToMinSec(maxValue.value)}</Text> */}
-                            </LinearGradient>
+            <StatusBar hidden />
+            <View style={{flex:1,position:'relative',backgroundColor:Colors.black}}>
+                <TapGestureHandler numberOfTaps={1} onActivated={activateHandle} >
+                    <Animated.View style={[Styles.videoContainer]}>
+                        <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
+                            {/* <OverlayOptions togglePlay={togglePlay} videoPlay={videoPlay} handleTenSec={handleTenSec.bind(null)} handleBack={handleBack} /> */}
+                            <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                            <VideoSlider onValueChange={onValueChange} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
+                        </Animated.View>
+                        <VideoPlayer 
+                            // collapsable={false}
+                            controls={false}
+                            onLoadStart={onLoadStart}
+                            // onExternalPlaybackChange={togglePlay}
+                            onLoad={_onLoad}
+                            
+                            // volume={100}
+                            onProgress={updateProgress}
+                            // useTextureView={true}
+                            ref={videoRef}       
+                            playWhenInactive={true}
+                            playInBackground={true}  
+                            source={{uri:`http://192.168.0.105:3000/public/endgame/variants/master.m3u8`  }}
+                            paused={!play}
+                            onBuffer={HandleBuffer}
+                            resizeMode='contain'
+                            // onError={ErrorHandle}
+                            style={Styles.video}
+                        />
+                        <View style={Styles.subtitles}>
+                            <MediumText styles={{textAlign:'center',fontSize:fonts.size.font18}}>{currentCaption}</MediumText>
                         </View>
                     </Animated.View>
-                    <VideoPlayer 
-                        controls={false}
-                        fullscreen={true}
-                        fullscreenAutorotate={true}
-                        fullscreenOrientation='landscape'
-                        onLoad={_onLoad}
-                        
-                        textTracks={[
-                            {
-                                title:'English',
-                                language:'en',
-                                type:TextTrackType.VTT,
-                                uri:'http://192.168.0.104:3000/subtitle_en.vtt'
-                            }
-                        ]}
-                        selectedTextTrack={{
-                            type:'language',
-                            value:'en'
-                        }}
-                        
-                        // selectedVideoTrack={{
-                        //     type:'resolution',
-                        //     value:1080
-                        // }}
-                        // onFullscreenPlayerDidDismiss={exitFullScreen}
-                        onProgress={handleProgress}
-                        ref={videoRef}                    
-                        // fullscreenOrientation='landscape'
-                        // source={{uri:'http://192.168.0.103:3000/assets/videos/output.m3u8',
-                        source={{uri:'http://192.168.0.104:3000/outputs/output_480p.m3u8',type:'m3u8'}}
-                            // source={{uri:'http://profficialsite.origin.mediaservices.windows.net/5ab94439-5804-4810-b220-1606ddcb8184/tears_of_steel_1080p-m3u8-aapl.ism/manifest(format=m3u8-aapl)',
-                            // type:'m3u8'
-                            // source={{uri:'https://res.cloudinary.com/anikets/video/upload/v1689084298/video4_yne8wm.mp4'
-                        // }}cd
-                        paused={!play}
-                    
-                        onBuffer={(e) => console.log("Is Buffering",e)}
-                        resizeMode='contain'
-                        onError={ErrorHandle}
-                        style={Styles.video}
-                    />
-                </Animated.View>
-            </TapGestureHandler>
+                </TapGestureHandler>
             </View>
-            </>
+        </>
     )
 }
 
 const Styles = StyleSheet.create({
     videoContainer:{
         flex:1,
-        backgroundColor:'black',
-        // width:metrics.screenHeight - (StatusBar.currentHeight / 2),
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
     },
+    
     video:{
         position:'relative',
-        zIndex:0,
+        zIndex:1,
         aspectRatio:16 / 9,
+        
         ...Platform.select({
             ios:{
                 width:metrics.screenHeight,
-                // height:'100%',
             },
             android:{
                 width:metrics.screenHeight,
-                // height:'100%',
 
             }
         })
     },
-    centerOptions:{
-        flexDirection:'row',
-        justifyContent:'space-around',
-        position:'absolute',
-        height:50,
-        right:0,
-        left:0,
-        top:(metrics.screenWidth / 2) - 25,
-        bottom:-100,
+    OverlayOptionContainer:{
+        ...StyleSheet.absoluteFillObject,
+        width:metrics.screenHeight,
+        zIndex:2,
+        // backgroundColor:'red'
     },
-    bottomOptions:{
+    subtitles:{
         position:'absolute',
-        height:90,
-        // backgroundColor:'red',
+        zIndex:1,
+        bottom:40,
+        right:0,
+        left:0
+    },
+    sliderTime:{
+        maxWidth:100,
+        textAlign:'center',
+    },
+    // centerOptions:{
+    //     flexDirection:'row',
+    //     justifyContent:'space-evenly',
+    //     position:'absolute',
+    //     height:50,
+    //     right:0,
+    //     left:0,
+    //     top:(metrics.screenWidth / 2) - 25,
+    //     bottom:-100,
+    // },
+    bottomContainer:{
+        position:'absolute',
         bottom:0,
         right:0,
         left:0,
+        flexDirection:'column',
     },
-    videoFilter:{
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor:'rgba(0,0,0,0.4)',
-        zIndex:2,
-    },
-    videoControls:{
-        ...StyleSheet.absoluteFillObject,
-        zIndex:5,
-    },  
-    headerContainer:{
-        position:'absolute',
-        top:0,
-        left:0,
-        right:0,
-        height:80,
+    // bottomOptions:{
+    //     flexDirection:'row',
+    //     justifyContent:'space-evenly',
+    //     alignItems:'center',
+    //     flex:1
+    // },
+    // bottomIconContainer:{
+    //     flexDirection:'column',
+    //     alignItems:'center',
+    //     gap:4,
+    //     maxHeight:80,
+    // },
+    bottomSlider:{
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'space-between',
-        paddingLeft:14,
-        paddingRight:14,
+        gap:6,
+        paddingRight:10,
+        paddingLeft:10
+        // paddingRight:StatusBar.currentHeight
     },
-    cancelIcon:{
-        width:20,
-        height:20
-    },
+    // videoFilter:{
+    //     ...StyleSheet.absoluteFillObject,
+    //     backgroundColor:'rgba(0,0,0,0.4)',
+    //     zIndex:2,
+    // },
+    // videoControls:{
+    //     ...StyleSheet.absoluteFillObject,
+    //     zIndex:5,
+    //     width:metrics.screenHeight,
+    // },  
+    // headerContainer:{
+    //     position:'absolute',
+    //     top:0,
+    //     left:0,
+    //     right:0,
+    //     height:80,
+    //     flexDirection:'row',
+    //     alignItems:'center',
+    //     justifyContent:'space-between',
+    //     paddingLeft:30,
+    //     paddingRight:30,
+    // },
+    // cancelIcon:{
+    //     width:20,
+    //     height:20
+    // },
     slider:{
-        ...StyleSheet.absoluteFillObject,
+        // ...StyleSheet.absoluteFillObject,
         bottom:0,
-        height:80
-        // width:200
+        borderRadius:30,
+        width:metrics.screenWidth - 200,
+        // overflow:'hidden'
     },
-    screenOptions:{
-        width:44,
-        height:44
-    }
+    // screenOptions:{
+    //     width:44,
+    //     height:44,
+    //     overflow:'hidden',
+    //     flexDirection:'row',
+    //     justifyContent:'center',
+    //     alignItems:'center'
+    // }
 })

@@ -3,3 +3,4 @@ Non Compatible dependencies
 react-native-orientation-locker
 lodash
 @react-native-community/blur
+axios

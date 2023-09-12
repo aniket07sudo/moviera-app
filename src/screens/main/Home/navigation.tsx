@@ -1,9 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { createSharedElementStackNavigator } from "react-navigation-shared-element"
 import HomeScreen from ".";
 import HomeDetails from "../Details/index";
-import { createStackNavigator } from "@react-navigation/stack";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeStackParamList } from "../../../ts/types/navigation";
 import Player from "../../../components/Player";

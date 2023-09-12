@@ -4,7 +4,8 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-naviga
 
 export type HomeStackParamList = {
     HomeScreen:undefined,
-    HomeDetailsScreen: { id:number , imageUrl:string | any }
+    HomeDetailsScreen: { id:number , imageUrl:string | any },
+    VideoPlayer:undefined
 }
 
 export type RootStackParamList = {

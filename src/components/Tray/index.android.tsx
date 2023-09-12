@@ -32,7 +32,7 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
                 horizontal
                 renderItem={({item,index}) => (
                     <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:item.image}})} style={Styles.cardContainer} key={index}>
-                        <Animated.Image sharedTransitionTag={`${index}`} source={item.image} style={Styles.imageContainer} />
+                        <Image source={item.image} style={Styles.imageContainer} />
                     </TouchableWithoutFeedback>
                 )}
             />

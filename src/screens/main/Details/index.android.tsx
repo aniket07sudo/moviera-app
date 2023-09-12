@@ -99,7 +99,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                 <Pressable>
                     <ShareIcon width={24} height={24} color={Colors.white} />
                 </Pressable>
-            </Animated.View>
+        </Animated.View>
         <ScrollView style={{flex:1}}>
         <Pressable onPress={gotoPlayer}>
 
@@ -110,15 +110,15 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                     </View> */}
                 {/* </Pressable> */}
                 
-                <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
-                    <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
+                <Animated.Image style={Styles.Image} source={route.params.imageUrl} />
+                    {/* <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
                         <PreviewPlayer isPreviewReady={isPreviewReady} />
-                    </Animated.View>
+                    </Animated.View> */}
                 <AnimatedLinearGradient entering={FadeInDown.delay(400).duration(400)} style={Styles.bottomGradient} colors={['transparent',Colors.secondary]} />
             </View>
             </Pressable>
 
-            <Animated.View  style={Styles.mainContainer}>
+            <View  style={Styles.mainContainer}>
                 <View style={Styles.textDetailsContainer}>
                     <View style={Styles.textContainer}>
                         <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
@@ -164,7 +164,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                 <View style={{marginTop:Spacing.headingTextBottomMargin}}>
                     <RegularText styles={{fontSize:fonts.size.font12,textAlign:'left'}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos odit nisi doloribus fugiat rem iste harum qui error quo soluta.</RegularText>
                 </View>
-            </Animated.View>
+            </View>
                 <Episode />
                 <Tabs tabsData={tabsData} />
                 {/* <Player /> */}

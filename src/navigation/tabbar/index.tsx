@@ -12,7 +12,7 @@ import HomeIcon from "../../assets/icons/BottomBar/Home";
 import ExploreIcon from "../../assets/icons/BottomBar/Explore";
 import ListIcon from "../../assets/icons/BottomBar/List";
 import ProfileIcon from "../../assets/icons/BottomBar/Profile";
-import CustomTabbar from "./CustomTabbar";
+import CustomTabbar from "./customTab";
 import { BlurView } from "@react-native-community/blur";
 import { BottomTabParamList } from "../../ts/types/navigation";
 

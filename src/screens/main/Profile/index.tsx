@@ -1,13 +1,13 @@
 import React from 'react'
 import { Button, Text, View } from 'react-native'
-import Player from '../../../components/Player';
+import VideoPlayer, { VideoProperties } from 'react-native-video'
+
 
 const ProfileScreen = ({navigation}) => {
 
     return (
         <View>
             <Text>Profile Page</Text>
-            <Player />
             <Button title='Edit Profile' onPress={() => navigation.navigate('ProfileStack', { screen:'EditProfile' })} />
         </View>
     )

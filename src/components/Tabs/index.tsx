@@ -37,7 +37,9 @@ export default function TabsComponent({tabsData}:TabsComponentProps) {
                 <TabHeader ScrollRef={ScrollRef} ScrollX={ScrollX} data={tabsData} />
             </View>
             <Animated.FlatList
+                collapsable={false}
                 ref={ScrollRef}
+                
                 bounces={false}
                 data={tabsData}
                 horizontal

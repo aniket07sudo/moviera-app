@@ -36,8 +36,6 @@
 				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
 			</dict>
 			<key>localhost</key>
 			<dict>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions,StyleSheet, Text, View , FlatList, ScrollView, Image, Button } from "react-native";
+import { Dimensions,StyleSheet, Text, View , FlatList, ScrollView, Image, Button, StatusBar } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Colors } from "../../../theme/colors";
 import Animated, { interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
-import CarouselComponent from "../../../components/VideoCarousel";
+import CarouselComponent from "../../../components/Carousel";
 import TrayComponent from "../../../components/Tray";
 import { TrayData } from "./constants";
 import LinearGradient from "react-native-linear-gradient";
@@ -47,27 +47,20 @@ const HomeScreen = () => {
     
     return (
         <>
-        <LinearGradient colors={[Colors.secondary,'transparent']} style={Styles.statusBarGradient} />
-        <Animated.ScrollView 
-            scrollEventThrottle={16} 
-            onScroll={ScrollHandler} 
+        <StatusBar backgroundColor={'transparent'} translucent={true} />
+        <ScrollView 
+            // scrollEventThrottle={16} 
+            // onScroll={ScrollHandler} 
             contentContainerStyle={{paddingBottom:90}} 
             style={Styles.container}
-            bounces={false}
+            // bounces={false}
         >
-            {/* <CarouselComponent ScrollY={ScrollY} /> */}
             <CarouselComponent />
-            <Animated.View style={[Styles.content]}  >
+            <View style={[Styles.content]}  >
                 <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
-                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Trending Now'} /> */}
-                {/* <TrayComponent navigation={navigation} data={TrayData} label={'Latest'} /> */}
-            </Animated.View>
-        {/* <Button title="Dispatch" onPress={() => dispatch({type:'CHECKY'})} /> */}
-        {/* <Button title="Dispatch" onPress={() => navigation.navigate('HomeStack',{
-            screen:'HomeDetailsScreen',
-            params: { id:1 }
-        })} /> */}
-        </Animated.ScrollView>
+                <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
+            </View>
+        </ScrollView>
         </>
     )
 }

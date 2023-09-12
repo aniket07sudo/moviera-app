@@ -1,0 +1,89 @@
+import { StyleSheet, View } from "react-native";
+import { RegularText } from "../../utils/Text";
+import { Slider } from "react-native-awesome-slider";
+import fonts from "../../theme/fonts";
+import metrics from "../../theme/metrics";
+import { Colors } from "../../theme/colors";
+import Animated from "react-native-reanimated";
+import { memo } from "react";
+
+interface VideoSlider {
+    sliderProgress:Animated.SharedValue<number>,
+    minValue:Animated.SharedValue<number>,
+    maxValue:Animated.SharedValue<number>,
+    cacheValue:Animated.SharedValue<number>,
+    onSlideComplete:(data:any) => void;
+    _onSlideStart:() => void;
+    onValueChange:() => void;
+}
+
+ function VideoSlider({sliderProgress,onValueChange,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
+
+    console.log("--------------------- [Slider Render] ---------------------");
+
+    
+    
+
+    return (
+        <View style={Styles.bottomSlider}>
+            <View style={Styles.sliderTime}>
+                {/* <RegularText styles={{fontSize:fonts.size.font12}}>{currentTime.value}</RegularText> */}
+            </View>
+            <Slider
+                style={Styles.slider} 
+                progress={sliderProgress}
+                minimumValue={minValue}
+                maximumValue={maxValue}
+                sliderHeight={3}
+                onValueChange={onValueChange}
+                
+                // isScrubbing={true}
+
+                renderThumb={() => <View style={{...StyleSheet.absoluteFillObject,top:-8,width:14,height:14,backgroundColor:'white',borderRadius:10,}} />}
+                // onValueChange={onSliderChange}
+                cache={cacheValue}
+                onSlidingComplete={onSlideComplete}
+                onSlidingStart={_onSlideStart}
+                // bubble={(s:number) => `${secToMinSec(s)}`}
+                theme={{
+                    cacheTrackTintColor:'white',
+                    minimumTrackTintColor:Colors.primary,
+                    maximumTrackTintColor:'rgba(147,134,120,0.6)',
+                    bubbleBackgroundColor:Colors.primary
+                }}
+            />
+            <View style={Styles.sliderTime}>
+                {/* <RegularText styles={{fontSize:fonts.size.font12}}>00 : {secToMinSec(maxValue.value)}</RegularText> */}
+            </View>
+        </View>
+    )
+}
+
+
+const Styles = StyleSheet.create({
+
+    sliderTime:{
+        maxWidth:100,
+        textAlign:'center',
+    },
+    bottomSlider:{
+        position:'absolute',
+        bottom:0,
+        right:0,
+        left:0,
+        height:200,
+        // zIndex:2,
+        flexDirection:'row',
+        alignItems:'center',
+        gap:6,
+        paddingRight:10,
+        paddingLeft:10
+    },
+    slider:{
+        bottom:0,
+        borderRadius:30,
+        width:metrics.screenWidth - 200,
+    },
+})
+
+export default memo(VideoSlider);
