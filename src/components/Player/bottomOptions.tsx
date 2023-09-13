@@ -2,6 +2,7 @@ import { Pressable, View , Image, StyleSheet } from "react-native";
 import { RegularText } from "../../utils/Text";
 import fonts from "../../theme/fonts";
 import { memo } from "react";
+import { LayoutConfig } from "../../utils/layout";
 
 
 function BottomOptions() {
@@ -40,7 +41,9 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-evenly',
         alignItems:'center',
-        flex:1,
+        // flex:1,
+        height:LayoutConfig.videoPlayer.bottomOptions
+        // backgroundColor:'red'
     },
     bottomIconContainer:{
         flexDirection:'column',

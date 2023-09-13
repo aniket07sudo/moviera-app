@@ -6,6 +6,7 @@ import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
 import Animated from "react-native-reanimated";
 import { memo } from "react";
+import { LayoutConfig } from "../../utils/layout";
 
 interface VideoSlider {
     sliderProgress:Animated.SharedValue<number>,
@@ -71,18 +72,13 @@ const Styles = StyleSheet.create({
         bottom:0,
         right:0,
         left:0,
-        height:200,
-        // zIndex:2,
+        height:LayoutConfig.videoPlayer.bottomOptions,
         flexDirection:'row',
         alignItems:'center',
-        gap:6,
-        paddingRight:10,
-        paddingLeft:10
     },
     slider:{
-        bottom:0,
+        ...StyleSheet.absoluteFillObject,
         borderRadius:30,
-        width:metrics.screenWidth - 200,
     },
 })
 

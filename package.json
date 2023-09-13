@@ -19,6 +19,7 @@
     "@react-navigation/stack": "^6.3.17",
     "axios": "^1.4.0",
     "i18next": "^23.2.6",
+    "lottie-react-native": "^6.2.0",
     "react": "18.2.0",
     "react-combine-reducers": "^1.1.1",
     "react-i18next": "^13.0.1",

@@ -5939,6 +5939,11 @@
   dependencies:
     "js-tokens" "^3.0.0 || ^4.0.0"
 
+"lottie-react-native@^6.2.0":
+  "integrity" "sha512-r0I+BPV2oC50/c5Lr41MmLJigH7TVrh4qu/ssWRj1UPpELxVwJlofbaN4mH91ruVw4LqB2mICbXVqUBVgoP64g=="
+  "resolved" "https://registry.npmjs.org/lottie-react-native/-/lottie-react-native-6.2.0.tgz"
+  "version" "6.2.0"
+
 "lru-cache@^5.1.1":
   "integrity" "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w=="
   "resolved" "https://registry.npmjs.org/lru-cache/-/lru-cache-5.1.1.tgz"
@@ -7443,7 +7448,7 @@
     "prop-types" "^15.7.2"
     "shaka-player" "^2.5.9"
 
-"react-native-windows@>=0.63.3":
+"react-native-windows@>=0.63.3", "react-native-windows@>=0.63.x":
   "integrity" "sha512-lb0OYahRGZaoi0S9EPD822cdoP5GG5NcWcZ8Rh8AmTnYAvcN7qduTEXghzaIxF2F+GjA4Y5kLiQahAPQOsF4JA=="
   "resolved" "https://registry.npmjs.org/react-native-windows/-/react-native-windows-0.72.4.tgz"
   "version" "0.72.4"
@@ -7489,7 +7494,7 @@
     "ws" "^6.2.2"
     "yargs" "^17.6.2"
 
-"react-native@*", "react-native@^0.72.3", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@>=0.63.2", "react-native@0.71.11":
+"react-native@*", "react-native@^0.72.3", "react-native@>=0.46", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@>=0.63.2", "react-native@0.71.11":
   "integrity" "sha512-++8IxgUe4Ev+bTiFlLfJCdSoE5cReVP1DTpVJ8f/QtzaxA3h1008Y3Xah1Q5vsR4rZcYMO7Pn3af+wOshdQFug=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.71.11.tgz"
   "version" "0.71.11"

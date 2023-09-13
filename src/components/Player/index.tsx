@@ -4,7 +4,7 @@ import Animated, { FadeIn, cancelAnimation, runOnJS, runOnUI, useAnimatedGesture
 import VideoPlayer, { VideoProperties } from 'react-native-video'
 import metrics from '../../theme/metrics';
 import { MediumText, RegularText } from '../../utils/Text';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { LegacyRef, RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import Orientation from 'react-native-orientation-locker';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,10 +22,8 @@ import { CustomVideoProperties } from '../../ts/types/video';
 import VideoSlider from './slider';
 import BottomOptions from './bottomOptions';
 import OverlayOptions from './OverlayOptions';
+import LottieView, { LottieViewProps } from 'lottie-react-native';
 
-const HEADER_HEIGHT = 80;
-const CENTER_HEIGHT = 50;
-const BOTTOM_HEIGHT = 100;
 
 
 
@@ -51,6 +49,10 @@ export default function Player() {
     const [activeSubtitle,setActiveSubtitle] = useState<ICaption[]>([]);
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef(null);
+
+    const OverlayOptionsRef = useRef(null);
+
+    const Padding = useSafeAreaInsets();
 
 
 
@@ -201,11 +203,14 @@ export default function Player() {
     
     const togglePlay = () => {
         setPlay(!play);
+        if(OverlayOptionsRef.current) {
+            if(play) {
+                OverlayOptionsRef.current.pause();
+            } else {
+                OverlayOptionsRef.current.play();
+            }
+        }
         runOnUI(handlePlay)(videoPlay);
-    }
-
-    const seekHandle = () => {
-
     }
 
     const videoControlsStyle = useAnimatedStyle(() => {
@@ -216,6 +221,10 @@ export default function Player() {
 
     const onLoadStart = () => {
         isBuffering.value = 0;
+        if(OverlayOptionsRef.current) {
+            OverlayOptionsRef.current.play();
+
+        }
     }
     
 
@@ -227,7 +236,7 @@ export default function Player() {
                     <Animated.View style={[Styles.videoContainer]}>
                         <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
                             {/* <OverlayOptions togglePlay={togglePlay} videoPlay={videoPlay} handleTenSec={handleTenSec.bind(null)} handleBack={handleBack} /> */}
-                            <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                            <OverlayOptions ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                             <VideoSlider onValueChange={onValueChange} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
                         </Animated.View>
                         <VideoPlayer 
@@ -243,12 +252,13 @@ export default function Player() {
                             ref={videoRef}       
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.105:3000/public/endgame/variants/master.m3u8`  }}
+                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8`  }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
                             // onError={ErrorHandle}
-                            style={Styles.video}
+                
+                            style={[Styles.video,{left:Padding.top}]}
                         />
                         <View style={Styles.subtitles}>
                             <MediumText styles={{textAlign:'center',fontSize:fonts.size.font18}}>{currentCaption}</MediumText>
@@ -269,29 +279,28 @@ const Styles = StyleSheet.create({
     },
     
     video:{
-        position:'relative',
+        position:'absolute',
         zIndex:1,
         aspectRatio:16 / 9,
-        
         ...Platform.select({
             ios:{
                 width:metrics.screenHeight,
             },
             android:{
                 width:metrics.screenHeight,
-
+                // flex:1,
+                // height:metrics.screenWidth,
             }
         })
     },
     OverlayOptionContainer:{
         ...StyleSheet.absoluteFillObject,
-        width:metrics.screenHeight,
-        zIndex:2,
+        zIndex:3,
         // backgroundColor:'red'
     },
     subtitles:{
         position:'absolute',
-        zIndex:1,
+        zIndex:2,
         bottom:40,
         right:0,
         left:0
