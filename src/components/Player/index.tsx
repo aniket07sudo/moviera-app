@@ -160,9 +160,11 @@ export default function Player() {
     const handleTenSec = (type:string) => {
         console.log("Type",type);
         if(type == 'backward') {
+            sliderProgress.value = withTiming(sliderProgress.value - 10);
             videoRef.current.seek(sliderProgress.value - 10);
         } 
         if(type == 'forward') {
+            sliderProgress.value = withTiming(sliderProgress.value + 10);
             videoRef.current.seek(sliderProgress.value + 10);
         }
         

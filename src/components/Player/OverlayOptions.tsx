@@ -80,7 +80,7 @@ interface OverlayOptionsProps {
                     <Image style={{width:44,height:44}} source={require('../../assets/png/back.png')} />
                 </Pressable>
                 <Pressable onPress={togglePlay} style={Styles.screenOptions}>
-                    <Animated.View style={[animatePause,StyleSheet.absoluteFillObject]}>
+                    <Animated.View style={[animatePause,StyleSheet.absoluteFillObject,{overflow:'hidden'}]}>
                         <LottieView resizeMode="contain" speed={1.5} loop={false} ref={playPauseRef} style={{width:44,height:44,transform:[{scale:3.1}]}} source={require('../../assets/lottie.json')} />
                     </Animated.View>
                     <Animated.View style={[BufferingAnimation]}>
