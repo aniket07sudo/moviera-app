@@ -15,7 +15,7 @@ interface VideoSlider {
     cacheValue:Animated.SharedValue<number>,
     onSlideComplete:(data:any) => void;
     _onSlideStart:() => void;
-    onValueChange:() => void;
+    onValueChange:(data:any) => void;
 }
 
  function VideoSlider({sliderProgress,onValueChange,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
