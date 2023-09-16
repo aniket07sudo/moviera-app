@@ -1,4 +1,4 @@
-import { ActivityIndicator, ActivityIndicatorComponent, Image, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ActivityIndicatorComponent, Image, Platform, Pressable, StyleSheet, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { MediumText, RegularText } from "../../utils/Text";
 import Animated, { interpolate, useAnimatedStyle, useDerivedValue, withTiming } from "react-native-reanimated";
@@ -74,13 +74,13 @@ interface OverlayOptionsProps {
         <Animated.View style={[Styles.videoControls]}>
             <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT,flexDirection:'row',top:0}} colors={['rgba(0,0,0,0.7)','transparent']} />
             <View style={Styles.headerContainer}>
-                <View style={{flexDirection:'row',gap:20,alignItems:'center'}}>
+                <View style={{flexDirection:'row',gap:10,alignItems:'center'}}>
                     <Pressable onPress={handleBack} style={Styles.cancelIcon}>
                         <Image style={{width:16,height:16}} source={require('../../assets/png/cross.png')} />
                     </Pressable>
                     <MediumText styles={{fontSize:fonts.size.font14}}>S1:E1 "The Beginning"</MediumText>
                 </View>
-                <Pressable style={{width:24,height:24}}>
+                <Pressable style={Styles.screenLock}>
                     <Image style={{width:22,height:22}} source={require('../../assets/png/padlock.png')} />
                 </Pressable>
             </View>
@@ -115,16 +115,19 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
-        paddingLeft:30,
-        paddingRight:30,
-        // zIndex:3
+        // paddingRight:30,
+        ...Platform.select({
+            ios:{
+                paddingLeft:10,
+            }
+        }),
+        zIndex:3
     },
     bottomOptions:{
         position:'absolute',
         right:0,
         left:0,
         bottom:0,
-        zIndex:3
     },
     mainCenterIcon:{
         position:'absolute',
@@ -139,7 +142,7 @@ const Styles = StyleSheet.create({
     },
     videoControls:{
         ...StyleSheet.absoluteFillObject,
-        zIndex:3
+        zIndex:3,
     },  
     centerOptions:{
         ...StyleSheet.absoluteFillObject,
@@ -148,14 +151,26 @@ const Styles = StyleSheet.create({
         justifyContent:'space-evenly',
         height:50,
         top:(metrics.screenWidth / 2) - 25,
-        // zIndex:3,
-        // overflow:'hidden'
-
+        zIndex:3,
     },
     cancelIcon:{
         width:20,
-        height:20
+        height:20,
+        padding:20,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
     },
+    screenLock:{
+        width:24,
+        height:24,
+        // backgroundColor:'red',
+        marginRight:10,
+        padding:20,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center'
+    }
 })
 
 export default memo(OverlayOptions);

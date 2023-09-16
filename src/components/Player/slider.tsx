@@ -75,6 +75,7 @@ const Styles = StyleSheet.create({
         height:LayoutConfig.videoPlayer.bottomOptions,
         flexDirection:'row',
         alignItems:'center',
+        zIndex:3
     },
     slider:{
         ...StyleSheet.absoluteFillObject,
