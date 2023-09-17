@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { Button, ImageBackground, Pressable, StyleSheet, Text, View , Image, ScrollView, Platform, StatusBar } from "react-native";
+import { Button, ImageBackground, Pressable, StyleSheet, Text,ScrollView, View , Image, Platform, StatusBar } from "react-native";
 import { HomeDetailsScreenProps, HomeStackParamList } from "../../../ts/types/navigation";
-import Animated, { Easing, FadeIn, FadeInDown, FadeInRight, FadeInUp, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Animated, { Easing, FadeIn, FadeInDown, FadeInRight, FadeInUp, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { Data, DataProps } from "../Home/HeroData";
 import { SCREEN_HEIGHT } from "../Home";
 import LinearGradient from "react-native-linear-gradient";
@@ -59,6 +59,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
     // console.log("imageUrl",imageUrl);
     const [details,setDetails] = useState<DataProps>();
     const isPreviewReady = useSharedValue(0);
+    // const ScrollY = useSharedValue(0);
 
     const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
     const dispatch = useDispatch();
@@ -82,12 +83,15 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
         navigation.goBack();
     }
 
+
     const animatedPreviewStyles = useAnimatedStyle(() => {
 
         return {
             opacity:isPreviewReady.value
         }
     })
+
+ 
     
     return (
         <>
@@ -100,22 +104,22 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                     <ShareIcon width={24} height={24} color={Colors.white} />
                 </Pressable>
             </Animated.View>
-        <ScrollView style={{flex:1}}>
-        <Pressable onPress={gotoPlayer}>
-
-            <View style={[Styles.imageContainer]}>
-                {/* <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}> */}
-                    {/* <View style={Styles.playIconContainer}>
-                        <Image style={Styles.playIcon} source={require('../../../assets/png/play_white.png')} />
-                    </View> */}
-                {/* </Pressable> */}
-                
-                <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
-                    <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
-                        <PreviewPlayer isPreviewReady={isPreviewReady} />
-                    </Animated.View>
-                <AnimatedLinearGradient entering={FadeInDown.delay(400).duration(400)} style={Styles.bottomGradient} colors={['transparent',Colors.secondary]} />
-            </View>
+        <ScrollView
+            style={{flex:1}}>
+            <Pressable onPress={gotoPlayer}>
+                <View style={[Styles.imageContainer]}>
+                    {/* <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}> */}
+                        {/* <View style={Styles.playIconContainer}>
+                            <Image style={Styles.playIcon} source={require('../../../assets/png/play_white.png')} />
+                        </View> */}
+                    {/* </Pressable> */}
+                    
+                    <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
+                        <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
+                            <PreviewPlayer isPreviewReady={isPreviewReady} />
+                        </Animated.View>
+                    <AnimatedLinearGradient entering={FadeInDown.delay(400).duration(400)} style={Styles.bottomGradient} colors={['transparent',Colors.secondary]} />
+                </View>
             </Pressable>
 
             <Animated.View  style={Styles.mainContainer}>

@@ -38,6 +38,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     const [activeSubtitle,setActiveSubtitle] = useState<ICaption[]>([]);
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef<CustomVideoProperties | null >(null);
+    const thumbSequence = useSharedValue(0);
 
     const OverlayOptionsRef = useRef<CustomOverlayOptionsType>(null);
 
@@ -48,6 +49,10 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     useEffect(() => {
         if(videoRef.current) {
             videoRef.current.presentFullscreenPlayer();
+            // videoRef.current = play;
+            // console.log("video ref",videoRef.current.props.paused);
+            // console.log("video ref",videoRef.current.state);
+            
         }
         Orientation.lockToLandscapeLeft();
         // console.log("Initial Orientation",Orientation.getInitialOrientation());
@@ -86,24 +91,32 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
         if(videoRef.current) {
             videoRef.current.seek(data);
         }
-        // setPlay(true);
+        setPlay(true); //////  Performance BottleNeck
     },[])
 
-    const onSlideStart = () => {    
-        'worklet'
-        isOptionsShown.value = 1;
-    }
+    // const onSlideStart = () => {    
+    //     'worklet'
+    //     isOptionsShown.value = 1;
+    // }
 
     const _onSlideStart = useCallback(() => {
-        console.log("Slide start");
-        runOnUI(onSlideStart);
-        // setPlay(false);
+        console.log("Slide start val");
+        // thumbSequence.value = sliderProgress.value +
+        // isOptionsShown.value = 1;
+        // sliderProgress.value
+        // runOnUI(onSlideStart);
+        setPlay(false); /////////  BOttleNeck Performance
     },[])
 
-    const onValueChange = useCallback((data:number) => {
-        // console.log("Scrub",data);
-        sliderProgress.value = data;
-    },[])
+    // const _onSlideStart = () => {
+    //     console.log("Slide start");
+    //     // isOptionsShown.value = 1;
+
+    //     runOnUI(onSlideStart);
+    //     // setPlay(false);
+    // }
+
+    
 
     // const onValueChange = (data) => {
     //     console.log("Scrub",data);
@@ -137,10 +150,11 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
 
     const handleTenSec = (type:string) => {
         console.log("Type",type);
+        let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
         if(type == 'backward') {
-            sliderProgress.value = withTiming(sliderProgress.value - 10);
+            sliderProgress.value = withTiming(validSliderProgressValue - 10);
             OverlayOptionsRef.current?.backward();
-            videoRef.current?.seek(sliderProgress.value - 10);
+            videoRef.current?.seek(validSliderProgressValue - 10);
         } 
         if(type == 'forward') {
             sliderProgress.value = withTiming(sliderProgress.value + 10);
@@ -162,7 +176,9 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     
     const togglePlay = () => {
         setPlay(!play);
-        
+        // if(videoRef.current) {
+        //     videoRef.current.props.paused = false;
+        // }
         if(OverlayOptionsRef.current) {
             if(play) {
                 OverlayOptionsRef.current.pause();
@@ -173,6 +189,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     }
 
     const videoControlsStyle = useAnimatedStyle(() => {
+
         return {
             opacity:isOptionsShown.value
         }
@@ -195,7 +212,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                         <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
                             <OverlayOptions ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                             {/* <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} /> */}
-                            <VideoSlider onValueChange={onValueChange} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
+                            <VideoSlider isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
                         </Animated.View>
                         <VideoPlayer 
                             // collapsable={false}
@@ -211,7 +228,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                             ref={videoRef}       
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8`  }}
+                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8`  }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
@@ -286,4 +303,4 @@ const Styles = StyleSheet.create({
     }
 })
 
-export default Player;
+export default memo(Player);

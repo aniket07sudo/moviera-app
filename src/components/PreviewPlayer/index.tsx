@@ -4,6 +4,7 @@ import VideoPlayer from 'react-native-video'
 import metrics from '../../theme/metrics';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 interface PreviewPlayerProps {
     isPreviewReady:Animated.SharedValue<number>
@@ -15,13 +16,15 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
     const [play,setPlay] = useState(false);
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    const isFocussed = useIsFocused();
 
-        return () => {
-            clearTimeout(timerRef.current);
+    // useEffect(() => {
 
-        }
-    },[])
+    //     return () => {
+    //         clearTimeout(timerRef.current);
+
+    //     }
+    // },[])
 
     const ErrorHandle = (e) => {
         console.log("Handle",e);
@@ -37,30 +40,34 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
     }
 
     return (
-        // <Pressable onPress={goToPlayer}>
+        <>
+        <StatusBar hidden />
+        <Pressable>
             <Animated.View style={Styles.videoContainer}>
                 <VideoPlayer 
                     controls={false}
-                    source={{uri:'http://192.168.0.104:3000/assets/videos/output.m3u8'}}
-                    paused={!play}
+                    source={{uri:'http://192.168.0.104:3000/public/witch/index/master_eng.m3u8'}}
+                    paused={!play || !isFocussed}
                     onBuffer={(e) => console.log("Is Buffering",e)}
-                    resizeMode='contain'
+                    resizeMode='cover'
                     onError={ErrorHandle}
                     onLoad={handleCompleteLoad}
                     style={Styles.video}
                 />
             </Animated.View>
-        // </Pressable>
+        </Pressable>
+        </>
     )
 }
 
 const Styles = StyleSheet.create({
     videoContainer:{
         position:'relative',
+        // backgroundColor:'red'
     },
     video:{
-        width:undefined,
-        height:'100%',
-        aspectRatio:16 / 9,
+        width:'100%',
+        // height:'100%',
+        aspectRatio: 10 / 9,
     }
 })

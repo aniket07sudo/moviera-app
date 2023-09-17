@@ -1,12 +1,14 @@
-import { StyleSheet, View } from "react-native";
+import { Image, ImageProps, StyleSheet, View } from "react-native";
 import { RegularText } from "../../utils/Text";
-import { Slider } from "react-native-awesome-slider";
+import { Bubble, Slider } from "react-native-awesome-slider";
 import fonts from "../../theme/fonts";
 import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
-import Animated from "react-native-reanimated";
-import { memo } from "react";
+import Animated, { withTiming } from "react-native-reanimated";
+import { memo, useCallback, useRef, useState } from "react";
 import { LayoutConfig } from "../../utils/layout";
+import { secToMinSec } from "../../utils/conversions";
+import BubbleImage from "./bubble";
 
 interface VideoSlider {
     sliderProgress:Animated.SharedValue<number>,
@@ -15,15 +17,31 @@ interface VideoSlider {
     cacheValue:Animated.SharedValue<number>,
     onSlideComplete:(data:any) => void;
     _onSlideStart:() => void;
-    onValueChange:(data:any) => void;
+    // onValueChange:(data:any) => void;
+    thumbSequence:Animated.SharedValue<number>;
+    isOptionsShown:Animated.SharedValue<number>;
 }
 
- function VideoSlider({sliderProgress,onValueChange,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
+
+
+ function VideoSlider({thumbSequence,isOptionsShown,sliderProgress,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
 
     console.log("--------------------- [Slider Render] ---------------------");
 
-    
-    
+    // const [imgURL,setImgURL] = useState("");
+
+
+    const onValueChange = useCallback((data:number) => {
+        console.log("Scrub",Math.floor(Math.abs(sliderProgress.value) / 20));
+        // console.log("Slide start val",);
+        thumbSequence.value = Math.round(Math.abs(sliderProgress.value) / 20);
+        sliderProgress.value = data;
+        isOptionsShown.value = withTiming(1);
+        
+        // setImgURL(`http://192.168.0.104:3000/witch/thumb/output_${formattedNumber}.jpg`);
+        
+    },[])
+
 
     return (
         <View style={Styles.bottomSlider}>
@@ -39,13 +57,15 @@ interface VideoSlider {
                 onValueChange={onValueChange}
                 
                 // isScrubbing={true}
-
                 renderThumb={() => <View style={{...StyleSheet.absoluteFillObject,top:-8,width:14,height:14,backgroundColor:'white',borderRadius:10,}} />}
                 // onValueChange={onSliderChange}
                 cache={cacheValue}
                 onSlidingComplete={onSlideComplete}
                 onSlidingStart={_onSlideStart}
-                // bubble={(s:number) => `${secToMinSec(s)}`}
+                // bubble={(s:number) => `hello`}
+                bubbleTranslateY={-100}
+                renderBubble={() => <BubbleImage thumbSequence={thumbSequence} /> }
+                // renderMark={() => <View style={{width:30,height:30,backgroundColor:'red'}} />}
                 theme={{
                     cacheTrackTintColor:'white',
                     minimumTrackTintColor:Colors.primary,
