@@ -62,7 +62,10 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
         }
        
         return () => {
+
             Orientation.lockToPortrait();
+            Orientation.removeAllListeners();
+            console.log("Unmount Video");
         }
     },[])
 
@@ -88,6 +91,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
 
     const _onSlideComplete = useCallback((data:number) => {
         sliderProgress.value = data;
+
         if(videoRef.current) {
             videoRef.current.seek(data);
         }
@@ -100,7 +104,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     // }
 
     const _onSlideStart = useCallback(() => {
-        console.log("Slide start val");
+        // console.log("Slide start val");
         // thumbSequence.value = sliderProgress.value +
         // isOptionsShown.value = 1;
         // sliderProgress.value
@@ -133,7 +137,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     const activateHandle = () => {
         // console.log("Shared Value Before",isOptionsShown.value);
         
-        isOptionsShown.value = withSequence(withTiming(1,{duration:400}),withDelay(2000,withTiming(0,{duration:400})));
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(2000,withTiming(0,{duration:200})));
         // console.log("Shared Value After",isOptionsShown.value);
         
         
@@ -149,7 +153,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     // }
 
     const handleTenSec = (type:string) => {
-        console.log("Type",type);
+        // console.log("Type",type);
         let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
         if(type == 'backward') {
             sliderProgress.value = withTiming(validSliderProgressValue - 10);
@@ -168,9 +172,10 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
         isBuffering.value = e.isBuffering;
     }
 
-    const updateProgress = ({currentTime,playableDuration}:{currentTime:number,playableDuration:number}) => {
-        sliderProgress.value = currentTime;
-        cacheValue.value = playableDuration;
+    const updateProgress = (obj:{currentTime:number,playableDuration:number}) => {
+        sliderProgress.value = obj.currentTime;
+        cacheValue.value = obj.playableDuration;
+        currentTime.value = obj.currentTime;
     }
 
     
@@ -212,7 +217,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                         <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
                             <OverlayOptions ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                             {/* <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} /> */}
-                            <VideoSlider isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
+                            <VideoSlider currentTime={currentTime} isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
                         </Animated.View>
                         <VideoPlayer 
                             // collapsable={false}
@@ -225,7 +230,8 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                             // volume={100}
                             onProgress={updateProgress}
                             // useTextureView={true}
-                            ref={videoRef}       
+                            ref={videoRef}     
+                              
                             playWhenInactive={true}
                             playInBackground={true}  
                             source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8`  }}
@@ -234,7 +240,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                             resizeMode='contain'
                             // onError={ErrorHandle}
                 
-                            style={[Styles.video,{left:Padding.top}]}
+                            style={[Styles.video]}
                         />
                         <View style={Styles.subtitles}>
                             <MediumText styles={{textAlign:'center',fontSize:fonts.size.font18}}>{currentCaption}</MediumText>
@@ -252,6 +258,7 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
+        backgroundColor:'red'
     },
     
     video:{
@@ -264,6 +271,7 @@ const Styles = StyleSheet.create({
             },
             android:{
                 width:metrics.screenHeight,
+                // flex:1
             }
         })
     },

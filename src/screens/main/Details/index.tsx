@@ -68,13 +68,13 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
 
     useEffect(() => {
         const findDetails = Data.find(e => e.id == route.params.id);
-        console.log("Details",findDetails);
+        // console.log("Details",findDetails);
         
         setDetails(findDetails);
     },[])
 
     const gotoPlayer = () => {
-        console.log("Pressed");
+        // console.log("Pressed");
         Orientation.lockToLandscapeLeft();
         navigation.navigate('VideoPlayer');
     }
@@ -114,7 +114,8 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                         </View> */}
                     {/* </Pressable> */}
                     
-                    <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} />
+                    {/* <Animated.Image style={Styles.Image} source={route.params.imageUrl} sharedTransitionTag={`${route.params.id}`} /> */}
+                    {/* <Animated.Image style={Styles.Image} source={route.params.imageUrl} /> */}
                         <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
                             <PreviewPlayer isPreviewReady={isPreviewReady} />
                         </Animated.View>

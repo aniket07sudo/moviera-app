@@ -26,7 +26,7 @@ interface OverlayOptionsProps {
 
     useImperativeHandle(ref,() => ({
         play:() => {
-            console.log("Logginf");
+            // console.log("Logginf");
             if(playPauseRef.current) {
                 playPauseRef.current.play(40,20);
             }
@@ -151,7 +151,7 @@ const Styles = StyleSheet.create({
         justifyContent:'space-evenly',
         height:50,
         top:(metrics.screenWidth / 2) - 25,
-        zIndex:3,
+        zIndex:4,
     },
     cancelIcon:{
         width:20,

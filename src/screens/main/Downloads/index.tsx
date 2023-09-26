@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Text, View } from 'react-native'
 
 const DownloadsScreen = () => {
@@ -10,4 +10,4 @@ const DownloadsScreen = () => {
     )
 }
 
-export default DownloadsScreen;
+export default memo(DownloadsScreen);

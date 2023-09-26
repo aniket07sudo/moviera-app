@@ -9,6 +9,9 @@ import {Colors} from '../theme/colors'
 
 const AppRouter = () => {
 
+    console.log("APP ROUTER RENDERS");
+
+
     const isAuthenticated = useSelector((state : IAppState) => state.auth.isAuthenticated);
 
     return (

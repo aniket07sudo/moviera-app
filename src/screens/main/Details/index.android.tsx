@@ -67,13 +67,13 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
 
     useEffect(() => {
         const findDetails = Data.find(e => e.id == route.params.id);
-        console.log("Details",findDetails);
+        // console.log("Details",findDetails);
         
         setDetails(findDetails);
     },[])
 
     const gotoPlayer = () => {
-        console.log("Pressed");
+        // console.log("Pressed");
         Orientation.lockToLandscapeLeft();
         navigation.navigate('VideoPlayer');
     }

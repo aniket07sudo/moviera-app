@@ -15,7 +15,7 @@ export default function reducer(state : IAuthState = initialState,action:IAction
                 loading:true
             }
         case "CHECKSS":
-            console.log("Inside REducer");
+            // console.log("Inside REducer");
 
             return {
                 ...state,

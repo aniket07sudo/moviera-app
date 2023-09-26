@@ -4,7 +4,7 @@ import VideoPlayer from 'react-native-video'
 import metrics from '../../theme/metrics';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 interface PreviewPlayerProps {
     isPreviewReady:Animated.SharedValue<number>
@@ -15,6 +15,8 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
     const timerRef = useRef<any>();
     const [play,setPlay] = useState(false);
     const dispatch = useDispatch();
+
+    const navigate = useNavigation();
 
     const isFocussed = useIsFocused();
 
@@ -27,7 +29,7 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
     // },[])
 
     const ErrorHandle = (e) => {
-        console.log("Handle",e);
+        // console.log("Handle",e);
     }
 
 
@@ -42,13 +44,13 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
     return (
         <>
         <StatusBar hidden />
-        <Pressable>
+        <Pressable onPress={() => navigate.navigate('HomeStack',{screen:'VideoPlayer'})}>
             <Animated.View style={Styles.videoContainer}>
                 <VideoPlayer 
                     controls={false}
-                    source={{uri:'http://192.168.0.104:3000/public/witch/index/master_eng.m3u8'}}
+                    source={{uri:'http://192.168.0.103:3000/public/witch/index/master_eng.m3u8'}}
                     paused={!play || !isFocussed}
-                    onBuffer={(e) => console.log("Is Buffering",e)}
+                    // onBuffer={(e) => console.log("Is Buffering",e)}
                     resizeMode='cover'
                     onError={ErrorHandle}
                     onLoad={handleCompleteLoad}

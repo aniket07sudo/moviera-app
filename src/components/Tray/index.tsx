@@ -19,6 +19,11 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
 
     // const navigation = useNavigation();
 
+    const onPress = (index,item) => {
+        // navigation.removeListener();
+        navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:item.image}})
+    }
+
     return (
         <View style={Styles.container}>
                 <View style={Styles.headContainer}>
@@ -31,8 +36,10 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
                 data={data}
                 horizontal
                 renderItem={({item,index}) => (
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('HomeStack',{screen:'HomeDetailsScreen',params:{id:index,imageUrl:item.image}})} style={Styles.cardContainer} key={index}>
-                        <Animated.Image sharedTransitionTag={`${index}`} source={item.image} style={Styles.imageContainer} />
+                    <TouchableWithoutFeedback onPress={() => onPress(index,item)} style={Styles.cardContainer} key={index}>
+                        {/* <Animated.Image sharedTransitionTag={`${index}`} source={item.image} style={Styles.imageContainer} /> */}
+                        <Animated.Image source={item.image} style={Styles.imageContainer} />
+                        {/* <RegularText>Hii</RegularText> */}
                     </TouchableWithoutFeedback>
                 )}
             />

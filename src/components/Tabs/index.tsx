@@ -28,7 +28,7 @@ export default function TabsComponent({tabsData}:TabsComponentProps) {
         }
     })
 
-    console.log("Handle scroll",ScrollX.value);
+    // console.log("Handle scroll",ScrollX.value);
 
 
     return (

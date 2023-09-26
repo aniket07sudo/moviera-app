@@ -111,7 +111,7 @@ const CarouselItem = forwardRef(({item,index,pause,ScrollX,isSound,setIsSound}:I
     }
 
     const handleSoundClick = () => {
-        console.log("Soound Click");
+        // console.log("Soound Click");
         
         setIsSound(!isSound);
     }

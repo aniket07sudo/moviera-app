@@ -1,6 +1,6 @@
 import { Image, ImageProps, StyleSheet, View } from "react-native";
 import { RegularText } from "../../utils/Text";
-import { Bubble, Slider } from "react-native-awesome-slider";
+import { Bubble, BubbleComponent, Slider } from "react-native-awesome-slider";
 import fonts from "../../theme/fonts";
 import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
@@ -15,6 +15,7 @@ interface VideoSlider {
     minValue:Animated.SharedValue<number>,
     maxValue:Animated.SharedValue<number>,
     cacheValue:Animated.SharedValue<number>,
+    currentTime:Animated.SharedValue<number>,
     onSlideComplete:(data:any) => void;
     _onSlideStart:() => void;
     // onValueChange:(data:any) => void;
@@ -22,9 +23,11 @@ interface VideoSlider {
     isOptionsShown:Animated.SharedValue<number>;
 }
 
+// const isHermes = () => !!global.HermesInternal;
 
 
- function VideoSlider({thumbSequence,isOptionsShown,sliderProgress,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
+
+ function VideoSlider({currentTime,thumbSequence,isOptionsShown,sliderProgress,_onSlideStart,onSlideComplete,minValue,maxValue,cacheValue}:VideoSlider) {
 
     console.log("--------------------- [Slider Render] ---------------------");
 
@@ -32,7 +35,7 @@ interface VideoSlider {
 
 
     const onValueChange = useCallback((data:number) => {
-        console.log("Scrub",Math.floor(Math.abs(sliderProgress.value) / 20));
+        // console.log("Scrub",Math.floor(Math.abs(sliderProgress.value) / 20));
         // console.log("Slide start val",);
         thumbSequence.value = Math.round(Math.abs(sliderProgress.value) / 20);
         sliderProgress.value = data;
@@ -46,7 +49,7 @@ interface VideoSlider {
     return (
         <View style={Styles.bottomSlider}>
             <View style={Styles.sliderTime}>
-                {/* <RegularText styles={{fontSize:fonts.size.font12}}>{currentTime.value}</RegularText> */}
+                <RegularText styles={{fontSize:fonts.size.font12}}>{currentTime.value}</RegularText>
             </View>
             <Slider
                 style={Styles.slider} 
@@ -62,9 +65,12 @@ interface VideoSlider {
                 cache={cacheValue}
                 onSlidingComplete={onSlideComplete}
                 onSlidingStart={_onSlideStart}
+                bubbleWidth={LayoutConfig.videoPlayer.bubbleWidth + LayoutConfig.videoPlayer.bubbleWidth / 1.4}
                 // bubble={(s:number) => `hello`}
-                bubbleTranslateY={-100}
+                bubbleTranslateY={-LayoutConfig.videoPlayer.bubbleHeight / 2}
+                // bubbleContainerStyle={{backgroundColor:'red'}}
                 renderBubble={() => <BubbleImage thumbSequence={thumbSequence} /> }
+                // renderBubble={() => <BubbleComponent /> }
                 // renderMark={() => <View style={{width:30,height:30,backgroundColor:'red'}} />}
                 theme={{
                     cacheTrackTintColor:'white',
@@ -84,7 +90,7 @@ interface VideoSlider {
 const Styles = StyleSheet.create({
 
     sliderTime:{
-        maxWidth:100,
+        // maxWidth:100,
         textAlign:'center',
     },
     bottomSlider:{
@@ -95,7 +101,7 @@ const Styles = StyleSheet.create({
         height:LayoutConfig.videoPlayer.bottomOptions,
         flexDirection:'row',
         alignItems:'center',
-        zIndex:3
+        zIndex:3,
     },
     slider:{
         ...StyleSheet.absoluteFillObject,

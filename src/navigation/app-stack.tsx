@@ -9,8 +9,12 @@ import { BottomTabParamList, RootStackParamList } from "../ts/types/navigation";
 
 
 const Stack = createStackNavigator<RootStackParamList>();
+// const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
+
+    console.log("app Navigator Renders");
+    
 
     return (
         <Stack.Navigator initialRouteName="HomeTabs">

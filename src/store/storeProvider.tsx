@@ -21,6 +21,7 @@ export const rootReducer = combineReducers({
 export const store = createStore(rootReducer);
 
 export const StoreProvider = ({children}:StoreProviderProps) => {
+    console.log("Store Provider REnders");
     
     return (
         <Provider store={store}> 
