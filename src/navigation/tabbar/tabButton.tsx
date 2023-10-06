@@ -24,7 +24,7 @@ export const TabButton = memo(({item,onPress,accessibilityState}) => {
     },[accessibilityState.selected])
 
     const animatedIconStyle = useAnimatedStyle(() => {
-        const scale = interpolate(activeAnimation.value,[0,1,0],[1,0.7,1]);
+        const scale = interpolate(activeAnimation.value,[0,1,0],[1,0.9,1]);
         return {
             transform:[{scale}]
         }
@@ -35,15 +35,13 @@ export const TabButton = memo(({item,onPress,accessibilityState}) => {
         <View style={{flex:1}}>
             <Pressable style={{flex:1,justifyContent:'center',alignItems:'center'}} onPress={onPress}>
                 <AnimatedLottie 
-                    // entering={Easing.}
-                    // duration={600}
                     ref={TabRef}
                     speed={2}
                     colorFilters={[{
                         keypath:'outlines',
                         color:accessibilityState.selected ? Colors.primary : '#fff'
                     }]} 
-                    style={[animatedIconStyle,{width:34,height:34}]} 
+                    style={[animatedIconStyle,{width:30,height:30}]} 
                     resizeMode="contain" 
                     loop={false} 
                     source={item.src} 

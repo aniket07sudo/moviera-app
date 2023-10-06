@@ -15,6 +15,7 @@ import { ICaption, parseVtt } from '../../utils/parseVtt';
 import VideoSlider from './slider';
 import OverlayOptions from './OverlayOptions';
 import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/video';
+import SliderBeta from './sliderBeta';
 
 
  function Player() {
@@ -34,7 +35,7 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     const [play,setPlay] = useState(true);
     // const [currentLanguage,setCurrentLanguage] = useState('eng');
     const navigation = useNavigation();
-    const cacheValue = useSharedValue(0);
+    const seekable = useSharedValue(0);
     const [activeSubtitle,setActiveSubtitle] = useState<ICaption[]>([]);
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef<CustomVideoProperties | null >(null);
@@ -69,6 +70,22 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
         }
     },[])
 
+    const updateSliderValue = (data) => {
+        'worklet'
+        console.log("Update Slider Value",data);
+        // let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
+        sliderProgress.value = data;
+        // setPlay(true);
+    }
+
+    const slideStart = () => {
+        console.log("Pause");
+        // runOnJS(setPlay)(false);
+        isOptionsShown.value = withTiming(1);
+        setPlay(false);
+        // setPlay(false);
+    }
+
 
     // const updateSubtitle = (time:number) => {
 
@@ -90,13 +107,16 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
 
 
     const _onSlideComplete = useCallback((data:number) => {
-        sliderProgress.value = data;
 
         if(videoRef.current) {
             videoRef.current.seek(data);
         }
+        sliderProgress.value = data;
+          
         setPlay(true); //////  Performance BottleNeck
     },[])
+
+    
 
     // const onSlideStart = () => {    
     //     'worklet'
@@ -128,7 +148,8 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
     // }
 
     const _onLoad = ({duration}:{duration:number}) => {
-        // console.log("Data",data);
+        console.log("duration",duration);
+
         maxValue.value = duration;
         videoPlay.value = 1;
         
@@ -172,10 +193,18 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
         isBuffering.value = e.isBuffering;
     }
 
-    const updateProgress = (obj:{currentTime:number,playableDuration:number}) => {
-        sliderProgress.value = obj.currentTime;
-        cacheValue.value = obj.playableDuration;
-        currentTime.value = obj.currentTime;
+    // const updateProgress = (obj:{currentTime:number,playableDuration:number}) => {
+    //     console.log("sliderProgress",sliderProgress.value);
+        
+    //     sliderProgress.value = obj.currentTime;
+    //     cacheValue.value = obj.playableDuration;
+    //     currentTime.value = obj.currentTime;
+    // }
+
+    const updateProgress = ({currentTime,seekableDuration}) => {
+        // console.log("sliderProg",sliderProgress.value);
+        seekable.value = seekableDuration;
+        sliderProgress.value = currentTime;
     }
 
     
@@ -217,7 +246,8 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                         <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
                             <OverlayOptions ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                             {/* <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} /> */}
-                            <VideoSlider currentTime={currentTime} isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} />
+                            {/* <VideoSlider currentTime={currentTime} isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} /> */}
+                            <SliderBeta seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
                         </Animated.View>
                         <VideoPlayer 
                             // collapsable={false}
@@ -226,7 +256,6 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                             preferredForwardBufferDuration={20}
                             // onExternalPlaybackChange={togglePlay}
                             onLoad={_onLoad}
-                            
                             // volume={100}
                             onProgress={updateProgress}
                             // useTextureView={true}
@@ -234,12 +263,12 @@ import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/
                               
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8`  }}
+                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8`  }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
                             // onError={ErrorHandle}
-                
+
                             style={[Styles.video]}
                         />
                         <View style={Styles.subtitles}>
@@ -258,7 +287,7 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'red'
+        // backgroundColor:'red'
     },
     
     video:{

@@ -65,9 +65,9 @@ interface VideoSlider {
                 cache={cacheValue}
                 onSlidingComplete={onSlideComplete}
                 onSlidingStart={_onSlideStart}
-                bubbleWidth={LayoutConfig.videoPlayer.bubbleWidth + LayoutConfig.videoPlayer.bubbleWidth / 1.4}
+                // bubbleWidth={LayoutConfig.videoPlayer.bubbleWidth + LayoutConfig.videoPlayer.bubbleWidth / 1.4}
                 // bubble={(s:number) => `hello`}
-                bubbleTranslateY={-LayoutConfig.videoPlayer.bubbleHeight / 2}
+                // bubbleTranslateY={-LayoutConfig.videoPlayer.bubbleHeight / 2}
                 // bubbleContainerStyle={{backgroundColor:'red'}}
                 renderBubble={() => <BubbleImage thumbSequence={thumbSequence} /> }
                 // renderBubble={() => <BubbleComponent /> }

@@ -12,7 +12,7 @@ function BottomOptions() {
 
     return(
         <View style={Styles.bottomOptions}>
-            <Pressable style={Styles.bottomIconContainer}>
+            <Pressable style={Styles.bottomIconContainer} onPress={() => console.log("Audio")}>
                 <Image style={{width:22,height:22}} source={require('../../assets/png/subtitles.png')} />
                 <RegularText styles={{fontSize:fonts.size.font10}}>Audio / Subtitles</RegularText>
             </Pressable>

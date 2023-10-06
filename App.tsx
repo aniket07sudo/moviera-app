@@ -36,6 +36,7 @@ import { StoreProvider } from './src/store/storeProvider';
 import 'react-native-gesture-handler'
 import Orientation from 'react-native-orientation-locker';
 import { enableFreeze, enableScreens } from 'react-native-screens';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 function App(): JSX.Element {
@@ -50,9 +51,9 @@ function App(): JSX.Element {
  },[])
 
   return (
-    <StoreProvider>
-      <AppRouter />
-    </StoreProvider>
+      <StoreProvider>
+        <AppRouter />
+      </StoreProvider>
   );
 }
 
