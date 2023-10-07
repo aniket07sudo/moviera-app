@@ -6,6 +6,7 @@ import { RegularText } from "../../utils/Text";
 import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Bubble from "./bubble";
 
 const ThumbSize = 20;
 const minValue = 0;
@@ -35,7 +36,7 @@ const VideoHeight = metrics.screenHeight
             translateX.value = (sliderProgress.value / maxValue.value) * (VideoHeight - ThumbSize * 2);
             seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - 2 * ThumbSize);
 
-            console.log("Animated REaction",sliderProgress.value,translateX.value,seekable.value);
+            // console.log("Animated REaction",sliderProgress.value,translateX.value,seekable.value);
         },[seekable,sliderProgress]
     )
 
@@ -60,6 +61,12 @@ const VideoHeight = metrics.screenHeight
             transform:[{translateX:2* ThumbSize + (seekableX.value - VideoHeight)}]
         }
     })
+
+    const ScrubbingBubbleAnimation = useAnimatedStyle(() => {
+        return {
+            opacity:withTiming(isScrubbing.value ? 1 : 0)
+        }
+    }) 
 
     const panGestureEvent = Gesture.Pan()
     .onTouchesDown((event) => {
@@ -109,6 +116,9 @@ const VideoHeight = metrics.screenHeight
             <View style={{width:ThumbSize,height:10}} />
                 <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                 <View style={Styles.sliderTrack} >
+                    <Animated.View style={[{position:'absolute',bottom:10},ScrubbingBubbleAnimation]}>
+                        <Bubble maxValue={maxValue} translateX={translateX} />
+                    </Animated.View>
                     <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:'black'}} />}>
                         <Animated.View style={[Styles.completedTintColor,animatedTintColor,{backgroundColor:Colors.primary}]} />
                         <Animated.View style={[Styles.seekable,seekableAnimatedStyle]} />

@@ -27,9 +27,8 @@ import SliderBeta from './sliderBeta';
     // const [isBuffering,setIsBuffering] = useState(false);
     const isBuffering = useSharedValue<boolean>(false);
     // const [currentProgress,setCurrentProgress] = useState(0);
-    const currentTime = useSharedValue(0);
+    // const currentTime = useSharedValue(0);
     const sliderProgress = useSharedValue(0);
-    const minValue = useSharedValue(0);
     const maxValue = useSharedValue(0);
     const videoPlay = useSharedValue(0);
     const [play,setPlay] = useState(true);
@@ -40,6 +39,8 @@ import SliderBeta from './sliderBeta';
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef<CustomVideoProperties | null >(null);
     const isScrubbing = useSharedValue<boolean>(false);
+    // const maxTranslateX = useSharedValue(0);
+
 
 
     const OverlayOptionsRef = useRef<CustomOverlayOptionsType>(null);
@@ -153,6 +154,7 @@ import SliderBeta from './sliderBeta';
 
         maxValue.value = duration;
         videoPlay.value = 1;
+        // maxTranslateX.value = duration / metrics.screenHeight
         
     }
 
