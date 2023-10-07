@@ -39,7 +39,8 @@ import SliderBeta from './sliderBeta';
     const [activeSubtitle,setActiveSubtitle] = useState<ICaption[]>([]);
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef<CustomVideoProperties | null >(null);
-    const thumbSequence = useSharedValue(0);
+    const isScrubbing = useSharedValue<boolean>(false);
+
 
     const OverlayOptionsRef = useRef<CustomOverlayOptionsType>(null);
 
@@ -201,9 +202,9 @@ import SliderBeta from './sliderBeta';
     //     currentTime.value = obj.currentTime;
     // }
 
-    const updateProgress = ({currentTime,seekableDuration}) => {
-        // console.log("sliderProg",sliderProgress.value);
-        seekable.value = seekableDuration;
+    const updateProgress = ({currentTime,playableDuration}) => {
+        // console.log("seekableDuration",playableDuration);
+        seekable.value = playableDuration;
         sliderProgress.value = currentTime;
     }
 
@@ -244,10 +245,10 @@ import SliderBeta from './sliderBeta';
                 <TapGestureHandler numberOfTaps={1} onActivated={activateHandle} >
                     <Animated.View style={[Styles.videoContainer]}>
                         <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
-                            <OverlayOptions ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                            <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                             {/* <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} /> */}
                             {/* <VideoSlider currentTime={currentTime} isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} /> */}
-                            <SliderBeta seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
+                            <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
                         </Animated.View>
                         <VideoPlayer 
                             // collapsable={false}
@@ -260,7 +261,6 @@ import SliderBeta from './sliderBeta';
                             onProgress={updateProgress}
                             // useTextureView={true}
                             ref={videoRef}     
-                              
                             playWhenInactive={true}
                             playInBackground={true}  
                             source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8`  }}

@@ -16,12 +16,13 @@ interface SliderBeta {
     maxValue:Animated.SharedValue<number>;
     seekable:Animated.SharedValue<number>;
     slideStart:() => void;
+    isScrubbing:Animated.SharedValue<boolean>;
 }
 
 // const VideoHeight = Dimensions.get('window').width;
 const VideoHeight = metrics.screenHeight
 
- const SliderBeta = ({seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
+ const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
 
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
@@ -32,16 +33,11 @@ const VideoHeight = metrics.screenHeight
         () => sliderProgress.value,
         () => {
             translateX.value = (sliderProgress.value / maxValue.value) * (VideoHeight - ThumbSize * 2);
-            console.log("Animated REaction",sliderProgress.value,translateX.value);
-        }
-    )
+            seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - 2 * ThumbSize);
 
-    useAnimatedReaction(
-        () => seekable.value,
-        () => {
-            seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - 2 * ThumbSize)
-        }
-    ) 
+            console.log("Animated REaction",sliderProgress.value,translateX.value,seekable.value);
+        },[seekable,sliderProgress]
+    )
 
     const animatedStyle = useAnimatedStyle(() => {
         
@@ -60,9 +56,8 @@ const VideoHeight = metrics.screenHeight
     })
 
     const seekableAnimatedStyle = useAnimatedStyle(() => {
-        let normalizedSeekable = seekable.value;
         return {
-            transform:[{translateX:seekableX.value - VideoHeight}]
+            transform:[{translateX:2* ThumbSize + (seekableX.value - VideoHeight)}]
         }
     })
 
@@ -76,6 +71,7 @@ const VideoHeight = metrics.screenHeight
     })
     .onStart(() => {
         contextX.value = translateX.value;
+        isScrubbing.value = true;
         runOnJS(slideStart)();
     })
     .onUpdate((event) => {
@@ -97,12 +93,12 @@ const VideoHeight = metrics.screenHeight
         // const actualValue = newValue * maxValue.value;
         // runOnJS(_onSlideComplete)(actualValue);
         console.log("Value",event.absoluteX);
-
         if(translateX.value >= 0 && translateX.value <= VideoHeight - 2 * ThumbSize) {
             
             const newValue = translateX.value/ (VideoHeight - 2 * ThumbSize) * maxValue.value;
             runOnJS(_onSlideComplete)(newValue);
         }
+        isScrubbing.value = false;
         
     }) 
     
@@ -112,15 +108,13 @@ const VideoHeight = metrics.screenHeight
         <View style={Styles.sliderContainer}>
             <View style={{width:ThumbSize,height:10}} />
                 <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                {/* <Animated.View style={[Styles.thumb,animatedStyle]} /> */}
                 <View style={Styles.sliderTrack} >
                     <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:'black'}} />}>
                         <Animated.View style={[Styles.completedTintColor,animatedTintColor,{backgroundColor:Colors.primary}]} />
+                        <Animated.View style={[Styles.seekable,seekableAnimatedStyle]} />
                     </MaskedView>
                     <GestureDetector gesture={panGestureEvent} >
                         <Animated.View style={Styles.seekArea}>
-
-                            {/* <Animated.View style={[Styles.seekable,seekableAnimatedStyle]} /> */}
                             <Animated.View style={[Styles.thumb,animatedStyle]} />
                         </Animated.View>
                     </GestureDetector>
@@ -181,18 +175,18 @@ const Styles = StyleSheet.create({
         // position:'absolute',
         // left:ThumbSize,
         height:4,
+        zIndex:3,
         // backgroundColor:Colors.primary,
         // backgroundColor:'red',
     },
     seekable:{
         height:3,
-        // ...StyleSheet.absoluteFillObject,
         position:'absolute',
         left:0,
         right:0,
+        zIndex:2,
         width:VideoHeight - ThumbSize * 2,
-        // backgroundColor:"rgba(147,134,120,0.6)",
-        backgroundColor:'red'
+        backgroundColor:"rgba(147,134,120,0.6)",
     },
 })
 

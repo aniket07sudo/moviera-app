@@ -18,9 +18,10 @@ interface OverlayOptionsProps {
     handleTenSec:(s:string) => void;
     isBuffering:Animated.SharedValue<boolean>;
     togglePlay:() => void;
+    isScrubbing:Animated.SharedValue<boolean>;
 }
 
- const OverlayOptions = forwardRef(({handleTenSec,isBuffering,togglePlay,handleBack}:OverlayOptionsProps,ref) => {
+ const OverlayOptions = forwardRef(({isScrubbing,handleTenSec,isBuffering,togglePlay,handleBack}:OverlayOptionsProps,ref) => {
 
     console.log("--------------------- [Overlay Options Render] ---------------------");
 
@@ -67,11 +68,18 @@ interface OverlayOptionsProps {
             opacity
         }
     })    
+
+    const scrubbingAnimation = useAnimatedStyle(() => {
+
+        return {
+            opacity:withTiming(isScrubbing.value ? 0 : 1)
+        }
+    })
     
 
     return (
         <>
-        <Animated.View style={[Styles.videoControls]}>
+        <Animated.View style={[Styles.videoControls,scrubbingAnimation]}>
             <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT,flexDirection:'row',top:0}} colors={['rgba(0,0,0,0.7)','transparent']} />
             <View style={Styles.headerContainer}>
                 <View style={{flexDirection:'row',gap:10,alignItems:'center'}}>
