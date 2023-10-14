@@ -28,6 +28,7 @@ const VideoHeight = metrics.screenHeight
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
     let seekableX = useSharedValue(0);
+    const bubbleIndex = useSharedValue(0);
 
 
     useAnimatedReaction(
@@ -35,7 +36,6 @@ const VideoHeight = metrics.screenHeight
         () => {
             translateX.value = (sliderProgress.value / maxValue.value) * (VideoHeight - ThumbSize * 2);
             seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - 2 * ThumbSize);
-
             // console.log("Animated REaction",sliderProgress.value,translateX.value,seekable.value);
         },[seekable,sliderProgress]
     )
@@ -43,8 +43,7 @@ const VideoHeight = metrics.screenHeight
     const animatedStyle = useAnimatedStyle(() => {
         
         return {
-            // transform:[{translateX:withTiming(translateX.value,{duration:.5,easing:Easing.inOut(Easing.ease)})}],
-            transform:[{translateX:(translateX.value - ThumbSize / 2)}],
+            transform:[{translateX:(translateX.value - ThumbSize / 2)},{scale:withTiming(isScrubbing.value ? 1.4 : 1)}],
         }
     }) 
 
@@ -80,26 +79,23 @@ const VideoHeight = metrics.screenHeight
         contextX.value = translateX.value;
         isScrubbing.value = true;
         runOnJS(slideStart)();
+
     })
     .onUpdate((event) => {
         translateX.value = event.translationX + contextX.value;
+        // bubbleIndex.value = Math.floor(sliderProgress.value / 5) * 5 / 5;
+        bubbleIndex.value = (Math.floor((translateX.value / (VideoHeight - ThumbSize * 2) * maxValue.value) / 5) * 5 / 5);
 
         if(translateX.value < 0) {
             translateX.value = 0;
         } else if(translateX.value >= VideoHeight - 2 * ThumbSize) {
             translateX.value = VideoHeight - 2 * ThumbSize;
         }
-        
-        console.log("Translation X Value : ",translateX.value,VideoHeight - 2 * ThumbSize);
 
     }) 
     .onEnd((event) => {
-        // console.log("Event",event);
         
-        // const newValue = translateX.value / (VideoHeight - 2 * ThumbSize);
-        // const actualValue = newValue * maxValue.value;
-        // runOnJS(_onSlideComplete)(actualValue);
-        console.log("Value",event.absoluteX);
+        // console.log("Value",event.absoluteX);
         if(translateX.value >= 0 && translateX.value <= VideoHeight - 2 * ThumbSize) {
             
             const newValue = translateX.value/ (VideoHeight - 2 * ThumbSize) * maxValue.value;
@@ -108,16 +104,14 @@ const VideoHeight = metrics.screenHeight
         isScrubbing.value = false;
         
     }) 
-    
-    
 
     return (
         <View style={Styles.sliderContainer}>
             <View style={{width:ThumbSize,height:10}} />
                 <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                <View style={Styles.sliderTrack} >
+                <View style={Styles.sliderTrack}>
                     <Animated.View style={[{position:'absolute',bottom:10},ScrubbingBubbleAnimation]}>
-                        <Bubble maxValue={maxValue} translateX={translateX} />
+                        <Bubble bubbleIndex={bubbleIndex} maxValue={maxValue} translateX={translateX} />
                     </Animated.View>
                     <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:'black'}} />}>
                         <Animated.View style={[Styles.completedTintColor,animatedTintColor,{backgroundColor:Colors.primary}]} />

@@ -104,8 +104,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                     <ShareIcon width={24} height={24} color={Colors.white} />
                 </Pressable>
             </Animated.View>
-        <ScrollView
-            style={{flex:1}}>
+        <ScrollView style={{flex:1}}>
             <Pressable onPress={gotoPlayer}>
                 <View style={[Styles.imageContainer]}>
                     {/* <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}> */}

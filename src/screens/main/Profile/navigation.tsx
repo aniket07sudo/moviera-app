@@ -4,12 +4,12 @@ import EditProfile from "./EditProfile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 function ProfileStack() {
-    const HomeStack = createNativeStackNavigator();
+    const Profile = createNativeStackNavigator();
     return (
-        <HomeStack.Navigator>
-            <HomeStack.Screen name="Profile" component={ProfileScreen} />
-            <HomeStack.Screen name="EditProfile" component={EditProfile} />
-        </HomeStack.Navigator>
+        <Profile.Navigator>
+            <Profile.Screen name="Profile" component={ProfileScreen} />
+            <Profile.Screen name="EditProfile" component={EditProfile} />
+        </Profile.Navigator>
     )
 }
 

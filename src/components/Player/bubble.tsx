@@ -1,28 +1,47 @@
 import { memo, useEffect, useMemo, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
-import Animated, { Easing, runOnJS, runOnUI, useAnimatedReaction, useAnimatedStyle, useSharedValue, withDecay, withSpring, withTiming } from "react-native-reanimated";
+import { Image, ImageBackground, StyleSheet, View } from "react-native";
+import Animated, { Easing, interpolate, runOnJS, runOnUI, useAnimatedReaction, useAnimatedStyle, useDerivedValue, useSharedValue, withDecay, withSpring, withTiming } from "react-native-reanimated";
 import { Colors } from "../../theme/colors";
 import { LayoutConfig } from "../../utils/layout";
 import metrics from "../../theme/metrics";
+import { RegularText } from "../../utils/Text";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 interface BubbleProps {
     translateX:Animated.SharedValue<number>;
     maxValue:Animated.SharedValue<number>;
+    bubbleIndex:Animated.SharedValue<number>;
 }
 
-function BubbleImage({translateX,maxValue}:BubbleProps) {
+interface bubbleImagesType {
+    [key:number]:string
+}
+
+const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+
+const bubbleImages : bubbleImagesType = {
+    0:'http://192.168.0.104:3000/witcher/thumb/output_0.jpg',
+    1:'http://192.168.0.104:3000/witcher/thumb/output_1.jpg',
+    2:'http://192.168.0.104:3000/witcher/thumb/output_2.jpg',
+    3:'http://192.168.0.104:3000/witcher/thumb/output_3.jpg',
+    4:'http://192.168.0.104:3000/witcher/thumb/output_4.jpg',
+    5:'http://192.168.0.104:3000/witcher/thumb/output_5.jpg',
+    6:'http://192.168.0.104:3000/witcher/thumb/output_6.jpg',
+    7:'http://192.168.0.104:3000/witcher/thumb/output_7.jpg',
+}
+
+function BubbleImage({translateX,maxValue,bubbleIndex}:BubbleProps) {
 
     console.log("-------------- thumbSequence Rerender ------------------");
 
-    // const seekableRangeX = useSharedValue(0);
     const maxTranslateX = useSharedValue(metrics.screenHeight - 40);
     const bubbleTranslateX = useSharedValue(0);
-
+    const [imgURL,setImgURL] = useState("http://192.168.0.104:3000/witch/thumb/output_2.jpg");
 
     useAnimatedReaction(
         () => translateX.value,
         () => {
-            console.log("MAx",maxValue.value,translateX.value,maxTranslateX.value);
+            // console.log("MAx",maxValue.value,translateX.value,maxTranslateX.value);
             bubbleTranslateX.value = translateX.value - LayoutConfig.videoPlayer.bubbleWidth / 2;
             if(translateX.value <= LayoutConfig.videoPlayer.bubbleWidth / 2) {
                 bubbleTranslateX.value = 0;
@@ -30,53 +49,48 @@ function BubbleImage({translateX,maxValue}:BubbleProps) {
             if(translateX.value + LayoutConfig.videoPlayer.bubbleWidth / 2 >= maxTranslateX.value) {
                 bubbleTranslateX.value = maxTranslateX.value - LayoutConfig.videoPlayer.bubbleWidth;
             }
-        }
+            
+            if(bubbleIndex.value > 100) {
+                console.log("Bubble Index",bubbleIndex.value,Math.floor(bubbleIndex.value / 100));
+                runOnJS(setImgURL)(bubbleImages[Math.floor(bubbleIndex.value / 100)]);
+                bubbleIndex.value = bubbleIndex.value % 100;
+            }
+            
+        },[]
     )
 
-    const [imgURL,setImgURL] = useState("http://192.168.0.104:3000/witch/thumb/output_001.jpg");
-
-    // console.log("imgURL",imgURL);
-
-
-    function updateImageUrl(data) {
-        console.log("daaa",data);
-
-        let formattedNumber = data.toLocaleString('en-US', {
-            minimumIntegerDigits: 3,
-            useGrouping: false
-          })
-        
-        setImgURL(`http://192.168.0.104:3000/witch/thumb/output_${formattedNumber}.jpg`);
-    }
-
-
-
-    // useAnimatedReaction(
-    //     () => {
-    //         // console.log("Thum Value",thumbSequence.value);
-    //         runOnJS(updateImageUrl)(thumbSequence.value)
-            
-
-    //     },
-    //     () => {
-            
-    //     },
-    // [])
-
-    // const ImageRender = useMemo(() => (
-    // ),[imgURL])
-
     const bubbleTranslateXStyle = useAnimatedStyle(() => {
-
+        
         return {
             transform:[{translateX:bubbleTranslateX.value}]
         }
     })
     
+    const PreviewMapperStyle = useAnimatedStyle(() => {
+        
+        const row = Math.floor(bubbleIndex.value / 10);
+        const col = Math.floor(bubbleIndex.value % 10);
+        console.log("Row : ",row,bubbleIndex.value);
+        console.log("Col : ",col);
+
+        // runOnJS(calculateDimensions)();
+
+        // const height = Image.getSize(bubbleImages[Math.floor(bubbleIndex.value / 100)],(_,height) => {
+        //     return height;
+        // });
+
+        // console.log("Dynamic Height",height);
+
+        
+        return {
+            transform:[{translateX:-320 * col},{translateY:-180 * row}],
+        }
+    },[])
+
     return (
-        <View style={Styles.bubbleRange}  pointerEvents="none">
+        <View style={Styles.bubbleRange} pointerEvents="none">
             <Animated.View style={[Styles.bubbleContainer,bubbleTranslateXStyle]}>
-                <Image style={Styles.imageContainer} source={{uri:imgURL}} />
+                <AnimatedImageBackground resizeMode="cover" style={[Styles.imageContainer,PreviewMapperStyle]} imageStyle={Styles.imageStyle} source={{uri:imgURL}} />
             </Animated.View>
         </View>
     )
@@ -85,20 +99,25 @@ function BubbleImage({translateX,maxValue}:BubbleProps) {
 const Styles = StyleSheet.create({
     bubbleRange:{
         width:metrics.screenHeight,
-        // backgroundColor:'red',
         position:'absolute',
         bottom:0,
     },
     bubbleContainer:{
-        // borderBottomColor:'red',
-        // borderBottomWidth:2,
-        width:LayoutConfig.videoPlayer.bubbleWidth,
-        height:LayoutConfig.videoPlayer.bubbleHeight,
-        backgroundColor:Colors.backgroundColor
+        width:320,
+        height:180,
+        // width:LayoutConfig.videoPlayer.bubbleWidth,
+        // height:LayoutConfig.videoPlayer.bubbleHeight,
+        backgroundColor:Colors.backgroundColor,
+        overflow:'hidden',
+    },
+    imageStyle:{
+        // width:'100%',
+        // height:1800,
+        // flex:1,
     },
     imageContainer:{
-        width:LayoutConfig.videoPlayer.bubbleWidth,
-        height:LayoutConfig.videoPlayer.bubbleHeight
+        width:3200,
+        height:1800,
     }
 })
 

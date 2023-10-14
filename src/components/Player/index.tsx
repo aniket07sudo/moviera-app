@@ -52,10 +52,6 @@ import SliderBeta from './sliderBeta';
     useEffect(() => {
         if(videoRef.current) {
             videoRef.current.presentFullscreenPlayer();
-            // videoRef.current = play;
-            // console.log("video ref",videoRef.current.props.paused);
-            // console.log("video ref",videoRef.current.state);
-            
         }
         Orientation.lockToLandscapeLeft();
         // console.log("Initial Orientation",Orientation.getInitialOrientation());
@@ -88,21 +84,6 @@ import SliderBeta from './sliderBeta';
         // setPlay(false);
     }
 
-
-    // const updateSubtitle = (time:number) => {
-
-    //     console.log("Subtitle",time,activeSubtitle);
-    //     const caption = activeSubtitle.find(sub => sub.start <= time && sub.end >= time);
-    //     console.log("Caption",caption?.content);
-        
-    //     setCurrentCaption(caption?.content);
-        
-    // }
-
-    // const ErrorHandle = (e) => {
-    //     console.log("Handle",e);
-    // }
-
     const handleBack = useCallback(() => {
         navigation.goBack();
     },[])
@@ -111,73 +92,35 @@ import SliderBeta from './sliderBeta';
     const _onSlideComplete = useCallback((data:number) => {
 
         if(videoRef.current) {
-            videoRef.current.seek(data);
+            videoRef.current.seek(data,5);
         }
         sliderProgress.value = data;
           
         setPlay(true); //////  Performance BottleNeck
     },[])
 
-    
-
-    // const onSlideStart = () => {    
-    //     'worklet'
-    //     isOptionsShown.value = 1;
-    // }
-
     const _onSlideStart = useCallback(() => {
-        // console.log("Slide start val");
-        // thumbSequence.value = sliderProgress.value +
-        // isOptionsShown.value = 1;
-        // sliderProgress.value
-        // runOnUI(onSlideStart);
+        
         setPlay(false); /////////  BOttleNeck Performance
     },[])
-
-    // const _onSlideStart = () => {
-    //     console.log("Slide start");
-    //     // isOptionsShown.value = 1;
-
-    //     runOnUI(onSlideStart);
-    //     // setPlay(false);
-    // }
-
-    
-
-    // const onValueChange = (data) => {
-    //     console.log("Scrub",data);
-    //     sliderProgress.value = data;
-    // }
 
     const _onLoad = ({duration}:{duration:number}) => {
         console.log("duration",duration);
 
         maxValue.value = duration;
         videoPlay.value = 1;
-        // maxTranslateX.value = duration / metrics.screenHeight
         
     }
 
     const activateHandle = () => {
-        // console.log("Shared Value Before",isOptionsShown.value);
-        
-        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(2000,withTiming(0,{duration:200})));
-        // console.log("Shared Value After",isOptionsShown.value);
-        
-        
-        // dispatch({type:'PLAYER_MODAL',payload:{playerUrl:'',playerModal:false}});
+        if(isOptionsShown.value) {
+            isOptionsShown.value = withTiming(0);
+        } else {
+            isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(2500,withTiming(0,{duration:200})));
+        }
     }
 
-    // function handleProgress(progressData) {
-    //     'worklet';
-    //     // currentTime
-    //     sliderProgress.value = progressData.currentTime;
-    //     cacheValue.value = progressData.playableDuration;
-        
-    // }
-
     const handleTenSec = (type:string) => {
-        // console.log("Type",type);
         let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
         if(type == 'backward') {
             sliderProgress.value = withTiming(validSliderProgressValue - 10);
@@ -196,16 +139,7 @@ import SliderBeta from './sliderBeta';
         isBuffering.value = e.isBuffering;
     }
 
-    // const updateProgress = (obj:{currentTime:number,playableDuration:number}) => {
-    //     console.log("sliderProgress",sliderProgress.value);
-        
-    //     sliderProgress.value = obj.currentTime;
-    //     cacheValue.value = obj.playableDuration;
-    //     currentTime.value = obj.currentTime;
-    // }
-
     const updateProgress = ({currentTime,playableDuration}) => {
-        // console.log("seekableDuration",playableDuration);
         seekable.value = playableDuration;
         sliderProgress.value = currentTime;
     }
@@ -213,9 +147,6 @@ import SliderBeta from './sliderBeta';
     
     const togglePlay = () => {
         setPlay(!play);
-        // if(videoRef.current) {
-        //     videoRef.current.props.paused = false;
-        // }
         if(OverlayOptionsRef.current) {
             if(play) {
                 OverlayOptionsRef.current.pause();
@@ -265,7 +196,7 @@ import SliderBeta from './sliderBeta';
                             ref={videoRef}     
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8`  }}
+                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8` }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
