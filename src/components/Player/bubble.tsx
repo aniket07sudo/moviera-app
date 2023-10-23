@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StyleSheet, View } from "react-native";
-import Animated, { Easing, interpolate, runOnJS, runOnUI, useAnimatedReaction, useAnimatedStyle, useDerivedValue, useSharedValue, withDecay, withSpring, withTiming } from "react-native-reanimated";
+import React from "react";
+import Animated, { Easing, interpolate, runOnJS, runOnUI, useAnimatedReaction, useAnimatedStyle, useDerivedValue, useSharedValue, withDecay, withSpring, withTiming , SharedValue } from "react-native-reanimated";
 import { Colors } from "../../theme/colors";
 import { LayoutConfig } from "../../utils/layout";
 import metrics from "../../theme/metrics";
@@ -8,9 +9,9 @@ import { RegularText } from "../../utils/Text";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 interface BubbleProps {
-    translateX:Animated.SharedValue<number>;
-    maxValue:Animated.SharedValue<number>;
-    bubbleIndex:Animated.SharedValue<number>;
+    translateX:SharedValue<number>;
+    maxValue:SharedValue<number>;
+    bubbleIndex:SharedValue<number>;
 }
 
 interface bubbleImagesType {
@@ -20,14 +21,14 @@ interface bubbleImagesType {
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const bubbleImages : bubbleImagesType = {
-    0:'http://192.168.0.104:3000/witcher/thumb/output_0.jpg',
-    1:'http://192.168.0.104:3000/witcher/thumb/output_1.jpg',
-    2:'http://192.168.0.104:3000/witcher/thumb/output_2.jpg',
-    3:'http://192.168.0.104:3000/witcher/thumb/output_3.jpg',
-    4:'http://192.168.0.104:3000/witcher/thumb/output_4.jpg',
-    5:'http://192.168.0.104:3000/witcher/thumb/output_5.jpg',
-    6:'http://192.168.0.104:3000/witcher/thumb/output_6.jpg',
-    7:'http://192.168.0.104:3000/witcher/thumb/output_7.jpg',
+    0:'http://192.168.0.103:3000/witcher/thumb/output_0.jpg',
+    1:'http://192.168.0.103:3000/witcher/thumb/output_1.jpg',
+    2:'http://192.168.0.103:3000/witcher/thumb/output_2.jpg',
+    3:'http://192.168.0.103:3000/witcher/thumb/output_3.jpg',
+    4:'http://192.168.0.103:3000/witcher/thumb/output_4.jpg',
+    5:'http://192.168.0.103:3000/witcher/thumb/output_5.jpg',
+    6:'http://192.168.0.103:3000/witcher/thumb/output_6.jpg',
+    7:'http://192.168.0.103:3000/witcher/thumb/output_7.jpg',
 }
 
 function BubbleImage({translateX,maxValue,bubbleIndex}:BubbleProps) {
@@ -72,14 +73,6 @@ function BubbleImage({translateX,maxValue,bubbleIndex}:BubbleProps) {
         const col = Math.floor(bubbleIndex.value % 10);
         console.log("Row : ",row,bubbleIndex.value);
         console.log("Col : ",col);
-
-        // runOnJS(calculateDimensions)();
-
-        // const height = Image.getSize(bubbleImages[Math.floor(bubbleIndex.value / 100)],(_,height) => {
-        //     return height;
-        // });
-
-        // console.log("Dynamic Height",height);
 
         
         return {

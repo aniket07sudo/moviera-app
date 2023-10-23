@@ -10,6 +10,7 @@ import type {PropsWithChildren} from 'react';
 import {
   Alert,
   Button,
+  Dimensions,
   Image,
   SafeAreaView,
   ScrollView,
@@ -37,16 +38,15 @@ import 'react-native-gesture-handler'
 import Orientation from 'react-native-orientation-locker';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useDispatch } from 'react-redux';
 
 
 function App(): JSX.Element {
 
   enableFreeze(true);
 
-
   useEffect(()=>{
     SplashScreen.hide();
-        
     // Orientation.lockToPortrait();
  },[])
 

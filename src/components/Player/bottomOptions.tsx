@@ -1,18 +1,30 @@
-import { Pressable, View , Image, StyleSheet } from "react-native";
+import { Pressable, View , Image, StyleSheet, Modal } from "react-native";
 import { RegularText } from "../../utils/Text";
 import fonts from "../../theme/fonts";
 import { memo } from "react";
 import { LayoutConfig } from "../../utils/layout";
+import PlayerModalDialog from "./playerModalDialog";
+import { runOnUI, useSharedValue } from "react-native-reanimated";
+import React from "react";
 
 
-function BottomOptions() {
+function BottomOptions({show}) {
 
     console.log("--------------------- [Bottom Options Render] ---------------------");
+
+    const updatePlayerState = ({show}) => {
+        console.log("click");
+        
+        runOnUI(() => {
+            show.value = !show.value;
+        })();
+        
+    }
     
 
     return(
         <View style={Styles.bottomOptions}>
-            <Pressable style={Styles.bottomIconContainer} onPress={() => console.log("Audio")}>
+            <Pressable style={Styles.bottomIconContainer} onPress={updatePlayerState}>
                 <Image style={{width:22,height:22}} source={require('../../assets/png/subtitles.png')} />
                 <RegularText styles={{fontSize:fonts.size.font10}}>Audio / Subtitles</RegularText>
             </Pressable>
@@ -42,7 +54,11 @@ const Styles = StyleSheet.create({
         justifyContent:'space-evenly',
         alignItems:'center',
         // flex:1,
-        height:LayoutConfig.videoPlayer.bottomOptions
+        height:LayoutConfig.videoPlayer.bottomOptions,
+        // position:'absolute',
+        // right:0,
+        // left:0,
+        // bottom:0,
         // backgroundColor:'red'
     },
     bottomIconContainer:{

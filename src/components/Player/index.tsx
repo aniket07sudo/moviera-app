@@ -1,4 +1,4 @@
-import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Dimensions, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { PanGestureHandler, TapGestureHandler ,  } from 'react-native-gesture-handler';
 import Animated, { FadeIn, cancelAnimation, runOnJS, runOnUI, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import VideoPlayer, { OnBufferData, VideoProperties } from 'react-native-video'
@@ -16,6 +16,7 @@ import VideoSlider from './slider';
 import OverlayOptions from './OverlayOptions';
 import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/video';
 import SliderBeta from './sliderBeta';
+import React from 'react';
 
 
  function Player() {
@@ -39,14 +40,11 @@ import SliderBeta from './sliderBeta';
     const [currentCaption,setCurrentCaption] = useState('');
     const videoRef = useRef<CustomVideoProperties | null >(null);
     const isScrubbing = useSharedValue<boolean>(false);
-    // const maxTranslateX = useSharedValue(0);
 
-
+    
+    
 
     const OverlayOptionsRef = useRef<CustomOverlayOptionsType>(null);
-
-    const Padding = useSafeAreaInsets();
-
 
 
     useEffect(() => {
@@ -54,6 +52,7 @@ import SliderBeta from './sliderBeta';
             videoRef.current.presentFullscreenPlayer();
         }
         Orientation.lockToLandscapeLeft();
+
         // console.log("Initial Orientation",Orientation.getInitialOrientation());
         if(Orientation.getInitialOrientation() == 'PORTRAIT') {
             Orientation.lockToLandscapeLeft();
@@ -67,6 +66,8 @@ import SliderBeta from './sliderBeta';
             console.log("Unmount Video");
         }
     },[])
+
+    
 
     const updateSliderValue = (data) => {
         'worklet'
@@ -99,10 +100,6 @@ import SliderBeta from './sliderBeta';
         setPlay(true); //////  Performance BottleNeck
     },[])
 
-    const _onSlideStart = useCallback(() => {
-        
-        setPlay(false); /////////  BOttleNeck Performance
-    },[])
 
     const _onLoad = ({duration}:{duration:number}) => {
         console.log("duration",duration);
@@ -113,11 +110,13 @@ import SliderBeta from './sliderBeta';
     }
 
     const activateHandle = () => {
-        if(isOptionsShown.value) {
-            isOptionsShown.value = withTiming(0);
-        } else {
-            isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(2500,withTiming(0,{duration:200})));
-        }
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+
+        // if(isOptionsShown.value) {
+        //     isOptionsShown.value = withTiming(0);
+        // } else {
+        //     isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+        // }
     }
 
     const handleTenSec = (type:string) => {
@@ -157,7 +156,7 @@ import SliderBeta from './sliderBeta';
     }
 
     const videoControlsStyle = useAnimatedStyle(() => {
-
+        
         return {
             opacity:isOptionsShown.value
         }
@@ -169,20 +168,17 @@ import SliderBeta from './sliderBeta';
             OverlayOptionsRef.current.play();
         }
     }
-    
 
     return (
         <>
             <StatusBar hidden />
-            <View style={{flex:1,position:'relative',backgroundColor:Colors.black}}>
-                <TapGestureHandler numberOfTaps={1} onActivated={activateHandle} >
+            <View style={{flex:1,position:'relative'}}>
+                <TapGestureHandler numberOfTaps={1} onActivated={activateHandle}  >
                     <Animated.View style={[Styles.videoContainer]}>
-                        <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
-                            <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
-                            {/* <OverlayOptions isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} /> */}
-                            {/* <VideoSlider currentTime={currentTime} isOptionsShown={isOptionsShown} thumbSequence={thumbSequence} _onSlideStart={_onSlideStart} onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} minValue={minValue} maxValue={maxValue} cacheValue={cacheValue} /> */}
-                            <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
-                        </Animated.View>
+                    {/* <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
+                        <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                        <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
+                    </Animated.View> */}
                         <VideoPlayer 
                             // collapsable={false}
                             controls={false}
@@ -196,19 +192,23 @@ import SliderBeta from './sliderBeta';
                             ref={videoRef}     
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8` }}
+                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8` }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
                             // onError={ErrorHandle}
-
                             style={[Styles.video]}
                         />
-                        <View style={Styles.subtitles}>
+                        {/* <View style={Styles.subtitles}>
                             <MediumText styles={{textAlign:'center',fontSize:fonts.size.font18}}>{currentCaption}</MediumText>
-                        </View>
+                        </View> */}
+                        
                     </Animated.View>
                 </TapGestureHandler>
+                {/* <Animated.View style={[Styles.outsideControls,videoControlsStyle]}> */}
+                    <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                    <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
+                {/* </Animated.View> */}
             </View>
         </>
     )
@@ -220,13 +220,18 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        // backgroundColor:'red'
+        // backgroundColor:'green',
     },
-    
-    video:{
+    outsideControls:{
+        // ...StyleSheet.absoluteFillObject,
+        // backgroundColor:'green',
         position:'absolute',
-        zIndex:1,
+        width:metrics.screenHeight,
+        zIndex:10
+    },
+    video:{
         aspectRatio:16 / 9,
+        // width:metrics.screenHeight
         ...Platform.select({
             ios:{
                 width:metrics.screenHeight,
@@ -239,7 +244,8 @@ const Styles = StyleSheet.create({
     },
     OverlayOptionContainer:{
         ...StyleSheet.absoluteFillObject,
-        zIndex:3,
+        zIndex:10,
+        // backgroundColor:'green',
     },
     subtitles:{
         position:'absolute',

@@ -1,13 +1,16 @@
 import { ActivityIndicator, ActivityIndicatorComponent, Image, Platform, Pressable, StyleSheet, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { MediumText, RegularText } from "../../utils/Text";
-import Animated, { interpolate, useAnimatedStyle, useDerivedValue, withTiming } from "react-native-reanimated";
+import Animated, { interpolate, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import fonts from "../../theme/fonts";
 import metrics from "../../theme/metrics";
 import BottomOptions from "./bottomOptions";
-import { RefObject, forwardRef, memo, useImperativeHandle, useRef } from "react";
+import { RefObject, forwardRef, memo, useImperativeHandle, useRef, useState } from "react";
 import LottieView, { LottieViewProps } from "lottie-react-native";
 import { Colors } from "../../theme/colors";
+import BottomSheet from "../BottomSheet";
+import PlayerModalDialog from "./playerModalDialog";
+import React from "react";
 
 const HEADER_HEIGHT = 80;
 
@@ -24,6 +27,15 @@ interface OverlayOptionsProps {
  const OverlayOptions = forwardRef(({isScrubbing,handleTenSec,isBuffering,togglePlay,handleBack}:OverlayOptionsProps,ref) => {
 
     console.log("--------------------- [Overlay Options Render] ---------------------");
+    // const [playerState,setPlayerState] = useState({
+    //     audioSubtitle:false,
+    //     quality:false,
+    //     speed:false,
+    //     episodes:false
+    // });
+
+    const audioSubtitles = useSharedValue<boolean>(false);
+
 
     useImperativeHandle(ref,() => ({
         play:() => {
@@ -61,6 +73,8 @@ interface OverlayOptionsProps {
         }
     })
 
+
+
     const BufferingAnimation = useAnimatedStyle(() => {
         const isVisible = Number(isBuffering.value) == 1 ? 1 : 0;
         const opacity = withTiming(isVisible);
@@ -75,6 +89,14 @@ interface OverlayOptionsProps {
             opacity:withTiming(isScrubbing.value ? 0 : 1)
         }
     })
+
+    // const videoControlsStyle = useAnimatedStyle(() => {
+        
+    //     return {
+    //         opacity:withTiming(isOptionsShown.value)
+    //     }
+    // })
+
     
 
     return (
@@ -109,7 +131,7 @@ interface OverlayOptionsProps {
                 </Pressable>
             </View>
             <View style={Styles.bottomOptions}>
-                <BottomOptions />
+                <BottomOptions show={audioSubtitles} />
             </View>
         </Animated.View>
         </>
@@ -123,7 +145,6 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
-        // paddingRight:30,
         ...Platform.select({
             ios:{
                 paddingLeft:10,
@@ -133,9 +154,10 @@ const Styles = StyleSheet.create({
     },
     bottomOptions:{
         position:'absolute',
+        bottom:0,
         right:0,
         left:0,
-        bottom:0,
+        zIndex:5
     },
     mainCenterIcon:{
         position:'absolute',
@@ -150,7 +172,10 @@ const Styles = StyleSheet.create({
     },
     videoControls:{
         ...StyleSheet.absoluteFillObject,
+        right:0,
+        left:0,
         zIndex:3,
+
     },  
     centerOptions:{
         ...StyleSheet.absoluteFillObject,
@@ -172,7 +197,6 @@ const Styles = StyleSheet.create({
     screenLock:{
         width:24,
         height:24,
-        // backgroundColor:'red',
         marginRight:10,
         padding:20,
         flexDirection:'row',

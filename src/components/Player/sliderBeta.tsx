@@ -1,4 +1,4 @@
-import { Dimensions, PanResponder, Pressable, StyleSheet, Text, View } from "react-native"
+import { Dimensions, PanResponder, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native"
 import { LayoutConfig } from "../../utils/layout"
 import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent, TapGestureHandler  } from "react-native-gesture-handler"
 import Animated, { Easing, interpolateColor, runOnJS, useAnimatedGestureHandler, useAnimatedReaction, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated"
@@ -7,9 +7,22 @@ import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Bubble from "./bubble";
+import PlayerTimer from "./timer";
+import React, { useEffect, useState } from "react";
+import useScreenDimensions from "../../utils/useScreenDimensions";
+import Orientation from "react-native-orientation-locker";
+import { useSelector } from "react-redux";
 
 const ThumbSize = 20;
 const minValue = 0;
+
+
+// if(Orientation.getDeviceOrientation() == 'PORTRAIT') {
+//     VideoHeight = Dimensions.get('window').height;
+// } else {
+//     VideoHeight = Dimensions.get('window').width;
+// }
+
 
 interface SliderBeta {
     _onSlideComplete:(data:number) => void;
@@ -20,16 +33,39 @@ interface SliderBeta {
     isScrubbing:Animated.SharedValue<boolean>;
 }
 
-// const VideoHeight = Dimensions.get('window').width;
-const VideoHeight = metrics.screenHeight
+
+
 
  const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
 
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
     let seekableX = useSharedValue(0);
-    const bubbleIndex = useSharedValue(0);
 
+    const bubbleIndex = useSharedValue(0);
+    const [height, setHeight] = useState(Dimensions.get('window').height);
+  const [width, setWidth] = useState(Dimensions.get('window').width);
+
+    let VideoHeight = height > width ? height : width;
+   
+
+    console.log("Screen data",VideoHeight,width,height);
+
+    useEffect(() => {
+        // Function to update dimensions
+        const updateDimensions = () => {
+          setHeight(Dimensions.get('window').height);
+          setWidth(Dimensions.get('window').width);
+        };
+    
+        // Event listener to update dimensions when the screen size changes
+        let dimensionListener = Dimensions.addEventListener('change', updateDimensions);
+    
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            dimensionListener.remove();
+        };
+      }, []);
 
     useAnimatedReaction(
         () => sliderProgress.value,
@@ -48,10 +84,8 @@ const VideoHeight = metrics.screenHeight
     }) 
 
     const animatedTintColor = useAnimatedStyle(() => {
-        // const backgroundColor = interpolateColor(translateX.value,[ThumbSize,200],['transparent',Colors.primary])
         return {
-            // backgroundColor,
-            transform:[{translateX: 2 * ThumbSize + (translateX.value - VideoHeight)}]
+            transform:[{translateX: 2 * ThumbSize + (translateX.value - VideoHeight)}] 
         }
     })
 
@@ -83,7 +117,6 @@ const VideoHeight = metrics.screenHeight
     })
     .onUpdate((event) => {
         translateX.value = event.translationX + contextX.value;
-        // bubbleIndex.value = Math.floor(sliderProgress.value / 5) * 5 / 5;
         bubbleIndex.value = (Math.floor((translateX.value / (VideoHeight - ThumbSize * 2) * maxValue.value) / 5) * 5 / 5);
 
         if(translateX.value < 0) {
@@ -93,9 +126,8 @@ const VideoHeight = metrics.screenHeight
         }
 
     }) 
-    .onEnd((event) => {
+    .onEnd(() => {
         
-        // console.log("Value",event.absoluteX);
         if(translateX.value >= 0 && translateX.value <= VideoHeight - 2 * ThumbSize) {
             
             const newValue = translateX.value/ (VideoHeight - 2 * ThumbSize) * maxValue.value;
@@ -106,16 +138,18 @@ const VideoHeight = metrics.screenHeight
     }) 
 
     return (
+        <>
+        {/* <PlayerTimer sliderProgress={sliderProgress} /> */}
         <View style={Styles.sliderContainer}>
-            <View style={{width:ThumbSize,height:10}} />
+                <View style={{width:ThumbSize,height:10}} />
                 <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                <View style={Styles.sliderTrack}>
+                <View style={[Styles.sliderTrack,{width:VideoHeight - ThumbSize * 2}]}>
                     <Animated.View style={[{position:'absolute',bottom:10},ScrubbingBubbleAnimation]}>
                         <Bubble bubbleIndex={bubbleIndex} maxValue={maxValue} translateX={translateX} />
                     </Animated.View>
                     <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:'black'}} />}>
                         <Animated.View style={[Styles.completedTintColor,animatedTintColor,{backgroundColor:Colors.primary}]} />
-                        <Animated.View style={[Styles.seekable,seekableAnimatedStyle]} />
+                        <Animated.View style={[Styles.seekable,seekableAnimatedStyle,{width:VideoHeight - ThumbSize * 2}]} />
                     </MaskedView>
                     <GestureDetector gesture={panGestureEvent} >
                         <Animated.View style={Styles.seekArea}>
@@ -125,46 +159,41 @@ const VideoHeight = metrics.screenHeight
                 </View>
                 </GestureHandlerRootView>
             </View>
+        </>
     )
 }
 
 const Styles = StyleSheet.create({
     sliderContainer:{
-        // height:3,
         position:'absolute',
+        // ...StyleSheet.absoluteFillObject,
+        // top:0,
         right:0,
         bottom:LayoutConfig.videoPlayer.bottomOptions,
+        // height:20,
         left:0,
-        zIndex:3,
         flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
+        zIndex:4,
+        // justifyContent:'center',
+        // alignItems:'center',
+        // zIndex:4,
+        // backgroundColor:'red'
     },
     sliderTrack:{
-        // ...StyleSheet.absoluteFillObject,
         position:'absolute',
-        left:0,
-        right:0,
         height:3,
         zIndex:3,
-        width:VideoHeight - ThumbSize * 2,
+        // width:VideoHeight - ThumbSize * 2, /// 
         flexDirection:'column',
         justifyContent:'center',
         backgroundColor:"rgba(147,134,120,0.6)",
-        // overflow:'hidden'
     },
     seekArea:{
         height:30,
         flexDirection:'column',
         justifyContent:'center',
-        // backgroundColor:'transparent',
-        // backgroundColor:"rgba(147,134,120,0.6)",
-        // width:VideoHeight,
     },
     thumb:{
-        // ...StyleSheet.absoluteFillObject,
-        // position:'absolute',
-        // top:-ThumbSize / 2,
         zIndex:5,
         width:ThumbSize,
         height:ThumbSize,
@@ -172,16 +201,9 @@ const Styles = StyleSheet.create({
         borderRadius:15,
     },
     completedTintColor:{
-        
-        // position:'absolute',
-        // width:VideoHeight - ThumbSize * 2,
         ...StyleSheet.absoluteFillObject,
-        // position:'absolute',
-        // left:ThumbSize,
         height:4,
         zIndex:3,
-        // backgroundColor:Colors.primary,
-        // backgroundColor:'red',
     },
     seekable:{
         height:3,
@@ -189,7 +211,7 @@ const Styles = StyleSheet.create({
         left:0,
         right:0,
         zIndex:2,
-        width:VideoHeight - ThumbSize * 2,
+        // width:VideoHeight - ThumbSize * 2,
         backgroundColor:"rgba(147,134,120,0.6)",
     },
 })
