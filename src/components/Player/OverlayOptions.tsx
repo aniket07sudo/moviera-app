@@ -1,7 +1,7 @@
 import { ActivityIndicator, ActivityIndicatorComponent, Image, Platform, Pressable, StyleSheet, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { MediumText, RegularText } from "../../utils/Text";
-import Animated, { interpolate, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { SharedValue, interpolate, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import fonts from "../../theme/fonts";
 import metrics from "../../theme/metrics";
 import BottomOptions from "./bottomOptions";
@@ -19,9 +19,9 @@ interface OverlayOptionsProps {
     // isOptionsShown:Animated.SharedValue<number>,
     handleBack:() => void;
     handleTenSec:(s:string) => void;
-    isBuffering:Animated.SharedValue<boolean>;
+    isBuffering:SharedValue<boolean>;
     togglePlay:() => void;
-    isScrubbing:Animated.SharedValue<boolean>;
+    isScrubbing:SharedValue<boolean>;
 }
 
  const OverlayOptions = forwardRef(({isScrubbing,handleTenSec,isBuffering,togglePlay,handleBack}:OverlayOptionsProps,ref) => {

@@ -1,4 +1,4 @@
-import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Dimensions, Image, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Dimensions, Image, ImageBackground, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { PanGestureHandler, TapGestureHandler ,  } from 'react-native-gesture-handler';
 import Animated, { FadeIn, cancelAnimation, runOnJS, runOnUI, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import VideoPlayer, { OnBufferData, VideoProperties } from 'react-native-video'
@@ -17,6 +17,8 @@ import OverlayOptions from './OverlayOptions';
 import { CustomOverlayOptionsType, CustomVideoProperties } from '../../ts/types/video';
 import SliderBeta from './sliderBeta';
 import React from 'react';
+import { BlurView } from '@react-native-community/blur';
+import BackIcon from '../../assets/icons/shared/back';
 
 
  function Player() {
@@ -25,8 +27,9 @@ import React from 'react';
 
     // const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
     const isOptionsShown = useSharedValue(0);
+    const [isError,setIsError] = useState(false);
     // const [isBuffering,setIsBuffering] = useState(false);
-    const isBuffering = useSharedValue<boolean>(false);
+    const isBuffering = useSharedValue<boolean>(true);
     // const [currentProgress,setCurrentProgress] = useState(0);
     // const currentTime = useSharedValue(0);
     const sliderProgress = useSharedValue(0);
@@ -103,7 +106,7 @@ import React from 'react';
 
     const _onLoad = ({duration}:{duration:number}) => {
         console.log("duration",duration);
-
+        isBuffering.value = false;
         maxValue.value = duration;
         videoPlay.value = 1;
         
@@ -162,11 +165,34 @@ import React from 'react';
         }
     })
 
+    const ErrorHandle = (err:any) => {
+        console.log("Error",err);
+        setIsError(true);
+        
+    }
+
     const onLoadStart = () => {
-        isBuffering.value = false;
+        isBuffering.value = true;
         if(OverlayOptionsRef.current) {
             OverlayOptionsRef.current.play();
         }
+    }
+
+    if(isError) {
+        return (
+            <View style={{...StyleSheet.absoluteFillObject,backgroundColor:'rgba(0,0,0,0.1)',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                <View style={{flexDirection:'column',justifyContent:'center',alignItems:'center',gap:20}}>
+                    <Image resizeMode='contain' source={require('../../assets/images/warning.png')} />
+                    <RegularText styles={{color:'#ff3333',fontSize:fonts.size.font18}}>Error Playing Video</RegularText>
+                    <Pressable onPress={handleBack} style={Styles.backButton}>
+                        <Image source={require('../../assets/images/back.png')} />
+                    </Pressable>
+                </View>
+                {/* <Pressable style={{backgroundColor:'red'}} onPress={handleBack}>
+                    <RegularText>Back</RegularText>
+                </Pressable> */}
+            </View>
+        )
     }
 
     return (
@@ -184,6 +210,7 @@ import React from 'react';
                             controls={false}
                             onLoadStart={onLoadStart}
                             preferredForwardBufferDuration={20}
+
                             // onExternalPlaybackChange={togglePlay}
                             onLoad={_onLoad}
                             // volume={100}
@@ -196,7 +223,7 @@ import React from 'react';
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
-                            // onError={ErrorHandle}
+                            onError={ErrorHandle}
                             style={[Styles.video]}
                         />
                         {/* <View style={Styles.subtitles}>
@@ -276,6 +303,11 @@ const Styles = StyleSheet.create({
         bottom:0,
         borderRadius:30,
         width:metrics.screenWidth - 200,
+    },
+    backButton:{
+        // width:50,
+        // height:50,
+        
     }
 })
 

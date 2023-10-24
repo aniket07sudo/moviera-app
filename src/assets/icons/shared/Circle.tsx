@@ -17,7 +17,7 @@ function DotIcon({color,width,height}:DotsIconProps) {
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="1"
-      viewBox="0 0 12 18"
+      viewBox="0 0 14 16"
     >
       <Circle cx="8" cy="8" r="5"></Circle>
     </Svg>

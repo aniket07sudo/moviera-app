@@ -104,12 +104,6 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
         <Pressable onPress={gotoPlayer}>
 
             <View style={[Styles.imageContainer]}>
-                {/* <Pressable onPress={onPress} style={[StyleSheet.absoluteFillObject,{zIndex:4}]}> */}
-                    {/* <View style={Styles.playIconContainer}>
-                        <Image style={Styles.playIcon} source={require('../../../assets/png/play_white.png')} />
-                    </View> */}
-                {/* </Pressable> */}
-                
                 <Animated.Image style={Styles.Image} source={route.params.imageUrl} />
                     {/* <Animated.View style={[animatedPreviewStyles,{position:'absolute',top:0,bottom:0}]}>
                         <PreviewPlayer isPreviewReady={isPreviewReady} />
@@ -134,26 +128,26 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                                 </View>
                             </View>
                         </View>
-                        <View style={Styles.tagsContainer}>
                             <View style={Styles.tagGenreContainer}>
-                                <MediumText styles={Styles.genre}>Adventure <DotIcon width="12" height="12" color={Colors.textGrey} /> Comedy</MediumText>
-                                <View style={Styles.tags}>
-                                    <MediumText styles={Styles.matchPercentage}>95% Match</MediumText>
+                                <MediumText styles={Styles.genre}>Adventure <DotIcon width="14" height="10" color={Colors.textGrey} /> Comedy</MediumText>
+                            </View>
+                        <View style={Styles.tagsContainer}>
+                            <View style={Styles.tags}>
+                                <MediumText styles={Styles.matchPercentage}>95% Match</MediumText>
 
-                                    <RegularText styles={{fontSize:fonts.size.font12}}>2012</RegularText>
-                                    <BoxText>
-                                        <RegularText styles={{fontSize:fonts.size.font10}} box>18+</RegularText>
-                                    </BoxText>
-                                    {/* <Image style={{width:20,height:20}} source={require('../../../../assets/png/18_plus.png')} /> */}
-                                    <View style={Styles.iconContainer}>
-                                        {/* <Image style={Styles.tagIcon} source={require('../../../../assets/png/hd.png')} /> */}
-                                        <Image style={Styles.tagIcon} source={require('../../../assets/png/4k.png')} />
-                                    </View>
-                                    <RegularText styles={{fontSize:fonts.size.font12}}>2h 2m</RegularText>
+                                <RegularText styles={{fontSize:fonts.size.font12}}>2012</RegularText>
+                                <BoxText>
+                                    <RegularText styles={{fontSize:fonts.size.font10}} box>18+</RegularText>
+                                </BoxText>
+                                {/* <Image style={{width:20,height:20}} source={require('../../../../assets/png/18_plus.png')} /> */}
+                                <View style={Styles.iconContainer}>
+                                    {/* <Image style={Styles.tagIcon} source={require('../../../../assets/png/hd.png')} /> */}
+                                    <Image style={Styles.tagIcon} source={require('../../../assets/png/4k.png')} />
                                 </View>
+                                <RegularText styles={{fontSize:fonts.size.font12}}>2h 2m</RegularText>
                             </View>
                             <View style={Styles.rating}>
-                                <StarIcon width={20} height={20} color={Colors.ratingColor} />
+                                <StarIcon width={18} height={18} color={Colors.ratingColor} />
                                 <MediumText styles={{fontSize:fonts.size.font12}}>4.5</MediumText>
                                 <Image style={{width:36,height:18}} source={require('../../../assets/png/imdb.png')} />
                             </View>
@@ -162,7 +156,7 @@ const HomeDetails = ({navigation,route}:HomeDetailsScreenProps) => {
                 </View>
 
                 <View style={{marginTop:Spacing.headingTextBottomMargin}}>
-                    <RegularText styles={{fontSize:fonts.size.font12,textAlign:'left'}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos odit nisi doloribus fugiat rem iste harum qui error quo soluta.</RegularText>
+                    <RegularText styles={{fontSize:fonts.size.font12,textAlign:'left',color:Colors.textSecondary}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos odit nisi doloribus fugiat rem iste harum qui error quo soluta.</RegularText>
                 </View>
             </View>
                 <Episode />
@@ -178,7 +172,8 @@ const Styles = StyleSheet.create({
         height:IMAGE_HEIGHT,
         width:'100%',
         position:'relative',
-        backgroundColor:Colors.secondary
+        // backgroundColor:Colors.secondary
+        // backgroundColor:Colors.secondary
     },
     iconContainer:{
         width:26,
@@ -187,19 +182,6 @@ const Styles = StyleSheet.create({
     tagIcon:{
         width:'100%',
         height:'100%'
-    },
-    playIconContainer:{
-        backgroundColor:Colors.primary,
-        position:'absolute',
-        zIndex:6,
-        top:(IMAGE_HEIGHT / 2) - (PLAY_ICON_HEIGHT / 2),
-        left:(metrics.screenWidth / 2) - (PLAY_ICON_WIDTH / 2),
-        borderRadius:Spacing.roundedButtonPadding * 2,
-        width:PLAY_ICON_WIDTH,
-        height:PLAY_ICON_WIDTH,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center'
     },
     headerContainer:{
         flex:1,
@@ -211,13 +193,10 @@ const Styles = StyleSheet.create({
         paddingLeft:Spacing.buttonLeftPadding,
         paddingRight:Spacing.buttonLeftPadding,
     },
-    playIcon:{
-        width:PLAY_ICON_WIDTH - PLAY_ICON_WIDTH / 1.8,
-        height:PLAY_ICON_HEIGHT - PLAY_ICON_HEIGHT / 1.8
-    },
     tagGenreContainer:{
         flexDirection:'column',
         gap:Spacing.buttonTopPadding,
+        height:20
     },
     bottomGradient:{
         position:'absolute',
@@ -252,7 +231,8 @@ const Styles = StyleSheet.create({
 
     },
     mainContainer:{
-        backgroundColor:Colors.secondary,
+        // backgroundColor:Colors.secondary,
+        backgroundColor:'#030303',
         paddingLeft:Spacing.screenPadding,
         paddingRight:Spacing.screenPadding
     },
@@ -262,7 +242,8 @@ const Styles = StyleSheet.create({
     },
     videoTitle:{
         fontSize:fonts.size.font24,
-        marginBottom:Spacing.headingTextBottomMargin - 8
+        marginBottom:Spacing.headingTextBottomMargin - 8,
+        color:Colors.textPrimary
     },
     genre:{
         color:Colors.textGrey,
@@ -271,8 +252,10 @@ const Styles = StyleSheet.create({
     tagsContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
-        alignItems:'flex-end',
+        alignItems:'center',
         marginTop:Spacing.headingTextBottomMargin,
+        // backgroundColor:'red',
+        height:20
     },
     tags:{
         flexDirection:'row',
@@ -289,10 +272,7 @@ const Styles = StyleSheet.create({
         marginTop:Spacing.headingTextBottomMargin,
         marginBottom:Spacing.headingTextBottomMargin
     },
-    primaryButton:{
-        backgroundColor:Colors.primary,
-        width:'50%'
-    },
+    
 
 })
 
