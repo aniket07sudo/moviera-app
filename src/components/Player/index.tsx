@@ -1,5 +1,5 @@
 import { ActivityIndicator, ActivityIndicatorComponent, Alert, Button, Dimensions, Image, ImageBackground, Modal, Platform, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { PanGestureHandler, TapGestureHandler ,  } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, State, TapGestureHandler, TapGestureHandlerProperties ,  } from 'react-native-gesture-handler';
 import Animated, { FadeIn, cancelAnimation, runOnJS, runOnUI, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import VideoPlayer, { OnBufferData, VideoProperties } from 'react-native-video'
 import metrics from '../../theme/metrics';
@@ -26,7 +26,7 @@ import BackIcon from '../../assets/icons/shared/back';
     console.log("---------------------[Player Rerender]---------------------");    
 
     // const modalVisible = useSelector((state:IAppState) => state.ui.playerModal);
-    const isOptionsShown = useSharedValue(0);
+    const isOptionsShown = useSharedValue(1);
     const [isError,setIsError] = useState(false);
     // const [isBuffering,setIsBuffering] = useState(false);
     const isBuffering = useSharedValue<boolean>(true);
@@ -113,14 +113,19 @@ import BackIcon from '../../assets/icons/shared/back';
     }
 
     const activateHandle = () => {
-        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+        
+        // isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
 
-        // if(isOptionsShown.value) {
-        //     isOptionsShown.value = withTiming(0);
-        // } else {
-        //     isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
-        // }
+        if(isOptionsShown.value) {
+            isOptionsShown.value = withTiming(0);
+        } else {
+            isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+        }
     }
+
+    const handleStartShouldSetResponderCapture = (event) => {
+        return true;
+      };
 
     const handleTenSec = (type:string) => {
         let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
@@ -161,7 +166,7 @@ import BackIcon from '../../assets/icons/shared/back';
     const videoControlsStyle = useAnimatedStyle(() => {
         
         return {
-            opacity:isOptionsShown.value
+            opacity:isOptionsShown.value,
         }
     })
 
@@ -178,7 +183,11 @@ import BackIcon from '../../assets/icons/shared/back';
         }
     }
 
+   
+
+
     if(isError) {
+       
         return (
             <View style={{...StyleSheet.absoluteFillObject,backgroundColor:'rgba(0,0,0,0.1)',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                 <View style={{flexDirection:'column',justifyContent:'center',alignItems:'center',gap:20}}>
@@ -188,28 +197,28 @@ import BackIcon from '../../assets/icons/shared/back';
                         <Image source={require('../../assets/images/back.png')} />
                     </Pressable>
                 </View>
-                {/* <Pressable style={{backgroundColor:'red'}} onPress={handleBack}>
-                    <RegularText>Back</RegularText>
-                </Pressable> */}
             </View>
         )
     }
 
     return (
         <>
-            <StatusBar hidden />
-            <View style={{flex:1,position:'relative'}}>
+            {/* <StatusBar hidden /> */}
+            {/* <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}> */}
+            {/* <View style={{flex:1,backgroundColor:'blue',zIndex:50}}> */}
                 <TapGestureHandler numberOfTaps={1} onActivated={activateHandle}  >
+                {/* <GestureDetector gesture={Gesture.Exclusive(singleTap)}> */}
+                
                     <Animated.View style={[Styles.videoContainer]}>
-                    {/* <Animated.View style={[Styles.OverlayOptionContainer,videoControlsStyle]}>
+                    <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
                         <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                         <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
-                    </Animated.View> */}
+                    </Animated.View>
                         <VideoPlayer 
                             // collapsable={false}
                             controls={false}
                             onLoadStart={onLoadStart}
-                            preferredForwardBufferDuration={20}
+                            // preferredForwardBufferDuration={20}
 
                             // onExternalPlaybackChange={togglePlay}
                             onLoad={_onLoad}
@@ -219,24 +228,23 @@ import BackIcon from '../../assets/icons/shared/back';
                             ref={videoRef}     
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8` }}
+                            source={{uri:`http://192.168.0.102:3000/public/witch/index/master_eng.m3u8` }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
                             onError={ErrorHandle}
                             style={[Styles.video]}
                         />
-                        {/* <View style={Styles.subtitles}>
-                            <MediumText styles={{textAlign:'center',fontSize:fonts.size.font18}}>{currentCaption}</MediumText>
-                        </View> */}
-                        
                     </Animated.View>
                 </TapGestureHandler>
-                {/* <Animated.View style={[Styles.outsideControls,videoControlsStyle]}> */}
+                {/* </GestureDetector> */}
+
+                {/* <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
                     <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                     <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
-                {/* </Animated.View> */}
-            </View>
+                </Animated.View> */}
+            {/* </View> */}
+            {/* </GestureHandlerRootView> */}
         </>
     )
 }
@@ -247,14 +255,20 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        // backgroundColor:'green',
+        backgroundColor:'green',
+        position:'relative',
+        zIndex:2
     },
     outsideControls:{
-        // ...StyleSheet.absoluteFillObject,
-        // backgroundColor:'green',
-        position:'absolute',
-        width:metrics.screenHeight,
-        zIndex:10
+        // width:896,
+        ...StyleSheet.absoluteFillObject,
+        // position:'absolute',
+        // top:0,
+        // right:0,
+        // bottom:0,
+        // left:0,
+        // backgroundColor:'red',
+        zIndex:5
     },
     video:{
         aspectRatio:16 / 9,
@@ -273,13 +287,6 @@ const Styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         zIndex:10,
         // backgroundColor:'green',
-    },
-    subtitles:{
-        position:'absolute',
-        zIndex:2,
-        bottom:40,
-        right:0,
-        left:0
     },
     sliderTime:{
         maxWidth:100,

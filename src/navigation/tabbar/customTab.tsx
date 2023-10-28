@@ -8,7 +8,6 @@ const TABBAR_HEIGHT = Dimensions.get('screen').height * 0.1
 
 const CustomTabbar = memo((props) => {
 
-    console.log("pro");
     
 
     return (

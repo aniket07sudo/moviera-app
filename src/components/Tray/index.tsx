@@ -29,7 +29,8 @@ const TrayComponent = ({data,label,navigation}:TrayProps) => {
                 <View style={Styles.headContainer}>
                 <MediumText styles={{fontSize:fonts.size.font16}}>{label}</MediumText>
                 <TouchableOpacity>
-                    <MediumText>See All</MediumText>
+                    {/* <MediumText>See All</MediumText> */}
+                    <Image resizeMode="contain" source={require('../../assets/images/right-arrow.png')} />
                 </TouchableOpacity>
                 </View>
             <FlatList  

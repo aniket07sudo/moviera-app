@@ -56,6 +56,7 @@ const HomeScreen = () => {
             // bounces={false}
         >
             <CarouselComponent />
+            <LinearGradient style colors={['transparent',Colors.secondary]} />
             <View style={[Styles.content]}  >
                 <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
                 <TrayComponent navigation={navigation} data={TrayData} label={'Continue Watching'} />
@@ -78,6 +79,7 @@ const Styles = StyleSheet.create({
         width:SCREEN_WIDTH,
         height:40,
     },
+    // linearF
 })
 
 export default HomeScreen;

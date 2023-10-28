@@ -1,3 +1,4 @@
+import React from "react";
 import LottieView from "lottie-react-native";
 import { forwardRef, memo, useEffect, useImperativeHandle, useRef } from "react";
 import { Pressable, View } from "react-native";

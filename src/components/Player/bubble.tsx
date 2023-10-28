@@ -21,14 +21,14 @@ interface bubbleImagesType {
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const bubbleImages : bubbleImagesType = {
-    0:'http://192.168.0.103:3000/witcher/thumb/output_0.jpg',
-    1:'http://192.168.0.103:3000/witcher/thumb/output_1.jpg',
-    2:'http://192.168.0.103:3000/witcher/thumb/output_2.jpg',
-    3:'http://192.168.0.103:3000/witcher/thumb/output_3.jpg',
-    4:'http://192.168.0.103:3000/witcher/thumb/output_4.jpg',
-    5:'http://192.168.0.103:3000/witcher/thumb/output_5.jpg',
-    6:'http://192.168.0.103:3000/witcher/thumb/output_6.jpg',
-    7:'http://192.168.0.103:3000/witcher/thumb/output_7.jpg',
+    0:'http://192.168.0.102:3000/witcher/thumb/output_0.jpg',
+    1:'http://192.168.0.102:3000/witcher/thumb/output_1.jpg',
+    2:'http://192.168.0.102:3000/witcher/thumb/output_2.jpg',
+    3:'http://192.168.0.102:3000/witcher/thumb/output_3.jpg',
+    4:'http://192.168.0.102:3000/witcher/thumb/output_4.jpg',
+    5:'http://192.168.0.102:3000/witcher/thumb/output_5.jpg',
+    6:'http://192.168.0.102:3000/witcher/thumb/output_6.jpg',
+    7:'http://192.168.0.102:3000/witcher/thumb/output_7.jpg',
 }
 
 function BubbleImage({translateX,maxValue,bubbleIndex}:BubbleProps) {

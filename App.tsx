@@ -52,7 +52,10 @@ function App(): JSX.Element {
 
   return (
       <StoreProvider>
+        {/* <GestureHandlerRootView style={{flex:1}}> */}
         <AppRouter />
+        {/* </GestureHandlerRootView> */}
+
       </StoreProvider>
   );
 }

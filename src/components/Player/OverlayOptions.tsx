@@ -11,6 +11,7 @@ import { Colors } from "../../theme/colors";
 import BottomSheet from "../BottomSheet";
 import PlayerModalDialog from "./playerModalDialog";
 import React from "react";
+import {RectButton, TapGestureHandler} from 'react-native-gesture-handler'
 
 const HEADER_HEIGHT = 80;
 
@@ -90,14 +91,6 @@ interface OverlayOptionsProps {
         }
     })
 
-    // const videoControlsStyle = useAnimatedStyle(() => {
-        
-    //     return {
-    //         opacity:withTiming(isOptionsShown.value)
-    //     }
-    // })
-
-    
 
     return (
         <>
@@ -115,10 +108,10 @@ interface OverlayOptionsProps {
                 </Pressable>
             </View>
             <View style={Styles.centerOptions}>
-                <Pressable onPress={handleTenSec.bind(null,'backward')} style={Styles.screenOptions}>
-                    <LottieView autoPlay ref={backRef} loop={false} resizeMode="contain" style={{width:'100%',height:'100%'}} source={require('../../assets/lottie_animations/back_video.json')} />
-                </Pressable>
-                <Pressable onPress={togglePlay} style={Styles.screenOptions}>
+                    <Pressable  onPress={handleTenSec.bind(null,'backward')} style={Styles.screenOptions}>
+                        <LottieView autoPlay ref={backRef} loop={false} resizeMode="contain" style={{width:'100%',height:'100%'}} source={require('../../assets/lottie_animations/back_video.json')} />
+                    </Pressable>
+                <Pressable hitSlop={{ top: 25, bottom: 25, left: 35, right: 35 }} onPress={togglePlay} style={Styles.screenOptions}>
                     <Animated.View style={[animatePause,StyleSheet.absoluteFillObject,{overflow:'hidden',flexDirection:'row',justifyContent:'center',alignItems:'center'}]}>
                         <LottieView resizeMode="contain" speed={2} loop={false} ref={playPauseRef} style={{width:44,height:44,transform:[{scale:3.1}]}} source={require('../../assets/lottie.json')} />
                     </Animated.View>
@@ -141,6 +134,10 @@ interface OverlayOptionsProps {
 const Styles = StyleSheet.create({
     headerContainer:{
         ...StyleSheet.absoluteFillObject,
+        // position:'absolute',
+        right:0,
+        top:0,
+        left:0,
         height:80,
         flexDirection:'row',
         alignItems:'center',
@@ -150,14 +147,17 @@ const Styles = StyleSheet.create({
                 paddingLeft:10,
             }
         }),
-        zIndex:3
+        // zIndex:4,
+        zIndex:0,
     },
     bottomOptions:{
         position:'absolute',
         bottom:0,
         right:0,
         left:0,
-        zIndex:5
+        // zIndex:5,
+        zIndex:0,
+        // backgroundColor:'green',
     },
     mainCenterIcon:{
         position:'absolute',
@@ -171,20 +171,33 @@ const Styles = StyleSheet.create({
         position:'relative'
     },
     videoControls:{
-        ...StyleSheet.absoluteFillObject,
+        // ...StyleSheet.absoluteFillObject,
+        // zIndex:5
+        position:'absolute',
         right:0,
         left:0,
-        zIndex:3,
-
+        bottom:0,
+        top:0,
+        // backgroundColor:'green',
+        // zIndex:3,
     },  
     centerOptions:{
         ...StyleSheet.absoluteFillObject,
+        // backgroundColor:'green',
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-evenly',
         height:50,
         top:(metrics.screenWidth / 2) - 25,
         zIndex:4,
+        // position:'absolute',
+        // bottom:0,
+        // top:10,
+        // right:0,
+        // left:0,
+        // height:100,
+        // backgroundColor:'green',
+        // zIndex:5
     },
     cancelIcon:{
         width:20,

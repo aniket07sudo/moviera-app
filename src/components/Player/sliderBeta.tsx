@@ -147,8 +147,8 @@ interface SliderBeta {
                     <Animated.View style={[{position:'absolute',bottom:10},ScrubbingBubbleAnimation]}>
                         <Bubble bubbleIndex={bubbleIndex} maxValue={maxValue} translateX={translateX} />
                     </Animated.View>
-                    <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:'black'}} />}>
-                        <Animated.View style={[Styles.completedTintColor,animatedTintColor,{backgroundColor:Colors.primary}]} />
+                    <MaskedView style={StyleSheet.absoluteFill} maskElement={<Animated.View style={{width:VideoHeight,height:4,backgroundColor:Colors.primary}} />}>
+                        <Animated.View style={[Styles.completedTintColor,animatedTintColor]} />
                         <Animated.View style={[Styles.seekable,seekableAnimatedStyle,{width:VideoHeight - ThumbSize * 2}]} />
                     </MaskedView>
                     <GestureDetector gesture={panGestureEvent} >
@@ -169,8 +169,10 @@ const Styles = StyleSheet.create({
         // ...StyleSheet.absoluteFillObject,
         // top:0,
         right:0,
+        // bottom:0,
+        // width:200,
         bottom:LayoutConfig.videoPlayer.bottomOptions,
-        // height:20,
+        height:20,
         left:0,
         flexDirection:'row',
         zIndex:4,
@@ -183,6 +185,7 @@ const Styles = StyleSheet.create({
         position:'absolute',
         height:3,
         zIndex:3,
+        // zIndex:0,
         // width:VideoHeight - ThumbSize * 2, /// 
         flexDirection:'column',
         justifyContent:'center',
@@ -194,7 +197,8 @@ const Styles = StyleSheet.create({
         justifyContent:'center',
     },
     thumb:{
-        zIndex:5,
+        // zIndex:5,
+        zIndex:0,
         width:ThumbSize,
         height:ThumbSize,
         backgroundColor:Colors.primary,
@@ -203,7 +207,10 @@ const Styles = StyleSheet.create({
     completedTintColor:{
         ...StyleSheet.absoluteFillObject,
         height:4,
+        
+        backgroundColor:Colors.primary,
         zIndex:3,
+        // zIndex:0,
     },
     seekable:{
         height:3,
@@ -211,6 +218,7 @@ const Styles = StyleSheet.create({
         left:0,
         right:0,
         zIndex:2,
+        // zIndex:0,
         // width:VideoHeight - ThumbSize * 2,
         backgroundColor:"rgba(147,134,120,0.6)",
     },
