@@ -33,10 +33,7 @@ interface SliderBeta {
     isScrubbing:Animated.SharedValue<boolean>;
 }
 
-
-
-
- const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
+const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
 
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
@@ -44,7 +41,7 @@ interface SliderBeta {
 
     const bubbleIndex = useSharedValue(0);
     const [height, setHeight] = useState(Dimensions.get('window').height);
-  const [width, setWidth] = useState(Dimensions.get('window').width);
+    const [width, setWidth] = useState(Dimensions.get('window').width);
 
     let VideoHeight = height > width ? height : width;
    
@@ -70,10 +67,10 @@ interface SliderBeta {
     useAnimatedReaction(
         () => sliderProgress.value,
         () => {
-            translateX.value = (sliderProgress.value / maxValue.value) * (VideoHeight - ThumbSize * 2);
-            seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - 2 * ThumbSize);
+            translateX.value = (sliderProgress.value / maxValue.value) * (VideoHeight - (ThumbSize * 2));
+            seekableX.value = (seekable.value / maxValue.value) * (VideoHeight - (2 * ThumbSize));
             // console.log("Animated REaction",sliderProgress.value,translateX.value,seekable.value);
-        },[seekable,sliderProgress]
+        },[seekable,sliderProgress,VideoHeight]
     )
 
     const animatedStyle = useAnimatedStyle(() => {

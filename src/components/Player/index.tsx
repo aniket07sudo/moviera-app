@@ -228,7 +228,7 @@ import BackIcon from '../../assets/icons/shared/back';
                             ref={videoRef}     
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.102:3000/public/witch/index/master_eng.m3u8` }}
+                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8` }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
@@ -255,7 +255,7 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'green',
+        // backgroundColor:'green',
         position:'relative',
         zIndex:2
     },
