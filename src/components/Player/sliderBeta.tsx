@@ -31,38 +31,22 @@ interface SliderBeta {
     seekable:Animated.SharedValue<number>;
     slideStart:() => void;
     isScrubbing:Animated.SharedValue<boolean>;
+    width:number;
+    height:number;
 }
 
-const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue}:SliderBeta) => {
+const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue,height,width}:SliderBeta) => {
 
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
     let seekableX = useSharedValue(0);
 
     const bubbleIndex = useSharedValue(0);
-    const [height, setHeight] = useState(Dimensions.get('window').height);
-    const [width, setWidth] = useState(Dimensions.get('window').width);
-
+ 
     let VideoHeight = height > width ? height : width;
-   
 
     console.log("Screen data",VideoHeight,width,height);
 
-    useEffect(() => {
-        // Function to update dimensions
-        const updateDimensions = () => {
-          setHeight(Dimensions.get('window').height);
-          setWidth(Dimensions.get('window').width);
-        };
-    
-        // Event listener to update dimensions when the screen size changes
-        let dimensionListener = Dimensions.addEventListener('change', updateDimensions);
-    
-        // Cleanup the event listener when the component is unmounted
-        return () => {
-            dimensionListener.remove();
-        };
-      }, []);
 
     useAnimatedReaction(
         () => sliderProgress.value,
@@ -137,9 +121,9 @@ const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComp
     return (
         <>
         {/* <PlayerTimer sliderProgress={sliderProgress} /> */}
-        <View style={Styles.sliderContainer}>
+        <View style={[Styles.sliderContainer,{top:height - 100,width,height}]}>
                 <View style={{width:ThumbSize,height:10}} />
-                <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center',height:10}}>
                 <View style={[Styles.sliderTrack,{width:VideoHeight - ThumbSize * 2}]}>
                     <Animated.View style={[{position:'absolute',bottom:10},ScrubbingBubbleAnimation]}>
                         <Bubble bubbleIndex={bubbleIndex} maxValue={maxValue} translateX={translateX} />
@@ -164,13 +148,13 @@ const Styles = StyleSheet.create({
     sliderContainer:{
         position:'absolute',
         // ...StyleSheet.absoluteFillObject,
-        // top:0,
-        right:0,
+        // top:100,
+        // right:0,
         // bottom:0,
         // width:200,
-        bottom:LayoutConfig.videoPlayer.bottomOptions,
-        height:20,
-        left:0,
+        // bottom:LayoutConfig.videoPlayer.bottomOptions,
+        // height:20,
+        // left:0,
         flexDirection:'row',
         zIndex:4,
         // justifyContent:'center',
@@ -210,7 +194,7 @@ const Styles = StyleSheet.create({
         // zIndex:0,
     },
     seekable:{
-        height:3,
+        height:10,
         position:'absolute',
         left:0,
         right:0,

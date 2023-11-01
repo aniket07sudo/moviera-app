@@ -44,6 +44,29 @@ import BackIcon from '../../assets/icons/shared/back';
     const videoRef = useRef<CustomVideoProperties | null >(null);
     const isScrubbing = useSharedValue<boolean>(false);
 
+    const [height, setHeight] = useState(Dimensions.get('window').height);
+    const [width, setWidth] = useState(Dimensions.get('window').width);
+
+    // let VideoHeight = height > width ? height : width;
+    // let VideoWidth = height < width ? height : width;
+
+
+    useEffect(() => {
+        // Function to update dimensions
+        const updateDimensions = () => {
+          setHeight(Dimensions.get('window').height);
+          setWidth(Dimensions.get('window').width);
+        };
+    
+        // Event listener to update dimensions when the screen size changes
+        let dimensionListener = Dimensions.addEventListener('change', updateDimensions);
+    
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            dimensionListener.remove();
+        };
+      }, []);
+
     
     
 
@@ -113,6 +136,7 @@ import BackIcon from '../../assets/icons/shared/back';
     }
 
     const activateHandle = () => {
+        console.log("Detect");
         
         // isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
 
@@ -166,7 +190,7 @@ import BackIcon from '../../assets/icons/shared/back';
     const videoControlsStyle = useAnimatedStyle(() => {
         
         return {
-            opacity:isOptionsShown.value,
+            opacity:isOptionsShown.value
         }
     })
 
@@ -206,14 +230,18 @@ import BackIcon from '../../assets/icons/shared/back';
             {/* <StatusBar hidden /> */}
             {/* <GestureHandlerRootView style={{flex:1,flexDirection:'row',alignItems:'center'}}> */}
             {/* <View style={{flex:1,backgroundColor:'blue',zIndex:50}}> */}
+                <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
+                    <OverlayOptions width={width} height={height} isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
+                    <SliderBeta width={width} height={height} isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
+                </Animated.View>
                 <TapGestureHandler numberOfTaps={1} onActivated={activateHandle}  >
                 {/* <GestureDetector gesture={Gesture.Exclusive(singleTap)}> */}
                 
                     <Animated.View style={[Styles.videoContainer]}>
-                    <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
+                    {/* <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
                         <OverlayOptions isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
                         <SliderBeta isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
-                    </Animated.View>
+                    </Animated.View> */}
                         <VideoPlayer 
                             // collapsable={false}
                             controls={false}
@@ -228,7 +256,7 @@ import BackIcon from '../../assets/icons/shared/back';
                             ref={videoRef}     
                             playWhenInactive={true}
                             playInBackground={true}  
-                            source={{uri:`http://192.168.0.103:3000/public/witch/index/master_eng.m3u8` }}
+                            source={{uri:`http://192.168.0.104:3000/public/witch/index/master_eng.m3u8` }}
                             paused={!play}
                             onBuffer={HandleBuffer}
                             resizeMode='contain'
@@ -255,20 +283,25 @@ const Styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        // backgroundColor:'green',
         position:'relative',
-        zIndex:2
+        zIndex:4
     },
     outsideControls:{
         // width:896,
-        ...StyleSheet.absoluteFillObject,
-        // position:'absolute',
+        position:'absolute',
+        // top:0,
+        // right:0,
+        // bottom:0,
+        // left:0,
+        zIndex:5
+        // position:'relative',
         // top:0,
         // right:0,
         // bottom:0,
         // left:0,
         // backgroundColor:'red',
-        zIndex:5
+        // position:'relative',
+        // zIndex:6,
     },
     video:{
         aspectRatio:16 / 9,

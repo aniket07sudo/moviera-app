@@ -23,9 +23,11 @@ interface OverlayOptionsProps {
     isBuffering:SharedValue<boolean>;
     togglePlay:() => void;
     isScrubbing:SharedValue<boolean>;
+    height:number;
+    width:number;
 }
 
- const OverlayOptions = forwardRef(({isScrubbing,handleTenSec,isBuffering,togglePlay,handleBack}:OverlayOptionsProps,ref) => {
+ const OverlayOptions = forwardRef(({isScrubbing,handleTenSec,isBuffering,togglePlay,handleBack,height,width}:OverlayOptionsProps,ref) => {
 
     console.log("--------------------- [Overlay Options Render] ---------------------");
     // const [playerState,setPlayerState] = useState({
@@ -94,9 +96,9 @@ interface OverlayOptionsProps {
 
     return (
         <>
-        <Animated.View style={[Styles.videoControls,scrubbingAnimation]}>
-            <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT,flexDirection:'row',top:0}} colors={['rgba(0,0,0,0.7)','transparent']} />
-            <View style={Styles.headerContainer}>
+        <Animated.View style={[Styles.videoControls,scrubbingAnimation,{height}]}>
+            <LinearGradient style={{...StyleSheet.absoluteFillObject,height:HEADER_HEIGHT,flexDirection:'row',top:0,width}} colors={['rgba(0,0,0,0.7)','transparent']} />
+            <View pointerEvents="box-none" style={[Styles.headerContainer,{width}]}>
                 <View style={{flexDirection:'row',gap:10,alignItems:'center'}}>
                     <Pressable onPress={handleBack} style={Styles.cancelIcon}>
                         <Image style={{width:16,height:16}} source={require('../../assets/png/cross.png')} />
@@ -107,7 +109,7 @@ interface OverlayOptionsProps {
                     <Image style={{width:22,height:22}} source={require('../../assets/png/padlock.png')} />
                 </Pressable>
             </View>
-            <View style={Styles.centerOptions}>
+            <View pointerEvents="box-none" style={[Styles.centerOptions,{width}]}>
                     <Pressable  onPress={handleTenSec.bind(null,'backward')} style={Styles.screenOptions}>
                         <LottieView autoPlay ref={backRef} loop={false} resizeMode="contain" style={{width:'100%',height:'100%'}} source={require('../../assets/lottie_animations/back_video.json')} />
                     </Pressable>
@@ -123,7 +125,7 @@ interface OverlayOptionsProps {
                     <LottieView autoPlay ref={forwardRef} resizeMode="contain" loop={false} style={{width:'100%',height:'100%'}} source={require('../../assets/lottie_animations/forward_video.json')} />
                 </Pressable>
             </View>
-            <View style={Styles.bottomOptions}>
+            <View pointerEvents="none" style={[Styles.bottomOptions,{width}]}>
                 <BottomOptions show={audioSubtitles} />
             </View>
         </Animated.View>
@@ -133,11 +135,12 @@ interface OverlayOptionsProps {
 
 const Styles = StyleSheet.create({
     headerContainer:{
-        ...StyleSheet.absoluteFillObject,
-        // position:'absolute',
+        // ...StyleSheet.absoluteFillObject,
+        position:'absolute',
         right:0,
         top:0,
         left:0,
+        // width:600,
         height:80,
         flexDirection:'row',
         alignItems:'center',
@@ -179,7 +182,7 @@ const Styles = StyleSheet.create({
         bottom:0,
         top:0,
         // backgroundColor:'green',
-        // zIndex:3,
+        zIndex:6,
     },  
     centerOptions:{
         ...StyleSheet.absoluteFillObject,

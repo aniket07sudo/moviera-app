@@ -50,6 +50,11 @@ function BottomOptions({show}) {
 
 const Styles = StyleSheet.create({
     bottomOptions:{
+        // ...StyleSheet.absoluteFillObject,
+        // position:'absolute',
+        // right:0,
+        // left:0,
+        // bottom:0,
         flexDirection:'row',
         justifyContent:'space-evenly',
         alignItems:'center',

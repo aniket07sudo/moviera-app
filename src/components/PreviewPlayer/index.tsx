@@ -45,7 +45,7 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
         <>
         <StatusBar hidden />
         <Pressable onPress={() => navigate.navigate('HomeStack',{screen:'VideoPlayer'})}>
-            <Animated.View style={Styles.videoContainer}>
+            {/* <Animated.View style={Styles.videoContainer}>
                 <VideoPlayer 
                     controls={false}
                     source={{uri:'http://192.168.0.103:3000/public/witch/index/master_eng.m3u8'}}
@@ -56,7 +56,7 @@ export default function PreviewPlayer({isPreviewReady}:PreviewPlayerProps) {
                     onLoad={handleCompleteLoad}
                     style={Styles.video}
                 />
-            </Animated.View>
+            </Animated.View> */}
         </Pressable>
         </>
     )
