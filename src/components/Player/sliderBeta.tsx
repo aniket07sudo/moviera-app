@@ -1,7 +1,7 @@
 import { Dimensions, PanResponder, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native"
 import { LayoutConfig } from "../../utils/layout"
 import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent, TapGestureHandler  } from "react-native-gesture-handler"
-import Animated, { Easing, interpolateColor, runOnJS, useAnimatedGestureHandler, useAnimatedReaction, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated"
+import Animated, { Easing, SharedValue, interpolateColor, runOnJS, useAnimatedGestureHandler, useAnimatedReaction, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from "react-native-reanimated"
 import { RegularText } from "../../utils/Text";
 import metrics from "../../theme/metrics";
 import { Colors } from "../../theme/colors";
@@ -33,9 +33,10 @@ interface SliderBeta {
     isScrubbing:Animated.SharedValue<boolean>;
     width:number;
     height:number;
+    isOptionsShown:SharedValue<number>;
 }
 
-const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue,height,width}:SliderBeta) => {
+const SliderBeta = ({isOptionsShown,isScrubbing,seekable,slideStart,sliderProgress,_onSlideComplete,maxValue,height,width}:SliderBeta) => {
 
     const translateX = useSharedValue(0);
     const contextX = useSharedValue(0);
@@ -88,6 +89,8 @@ const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComp
         contextX.value = event.allTouches[0].absoluteX;
         const newValue = event.allTouches[0].absoluteX / (VideoHeight- 2 * ThumbSize) * maxValue.value;
         runOnJS(_onSlideComplete)(newValue);
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+        
         // _onSlideComplete(newValue);
     })
     .onStart(() => {
@@ -115,6 +118,7 @@ const SliderBeta = ({isScrubbing,seekable,slideStart,sliderProgress,_onSlideComp
             runOnJS(_onSlideComplete)(newValue);
         }
         isScrubbing.value = false;
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
         
     }) 
 

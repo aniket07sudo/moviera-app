@@ -78,6 +78,7 @@ import BackIcon from '../../assets/icons/shared/back';
             videoRef.current.presentFullscreenPlayer();
         }
         Orientation.lockToLandscapeLeft();
+        runOnJS(firstRunAnimation)();
 
         // console.log("Initial Orientation",Orientation.getInitialOrientation());
         if(Orientation.getInitialOrientation() == 'PORTRAIT') {
@@ -102,6 +103,13 @@ import BackIcon from '../../assets/icons/shared/back';
         sliderProgress.value = data;
         // setPlay(true);
     }
+
+    const firstRunAnimation = () => {
+        'worklet'
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+
+    }
+  
 
     const slideStart = () => {
         console.log("Pause");
@@ -147,12 +155,10 @@ import BackIcon from '../../assets/icons/shared/back';
         }
     }
 
-    const handleStartShouldSetResponderCapture = (event) => {
-        return true;
-      };
-
     const handleTenSec = (type:string) => {
         let validSliderProgressValue = sliderProgress.value - 10 < 0 ? 0 : sliderProgress.value;
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+
         if(type == 'backward') {
             sliderProgress.value = withTiming(validSliderProgressValue - 10);
             OverlayOptionsRef.current?.backward();
@@ -177,7 +183,10 @@ import BackIcon from '../../assets/icons/shared/back';
 
     
     const togglePlay = () => {
+        isOptionsShown.value = withSequence(withTiming(1,{duration:200}),withDelay(3000,withTiming(0,{duration:200})));
+
         setPlay(!play);
+    
         if(OverlayOptionsRef.current) {
             if(play) {
                 OverlayOptionsRef.current.pause();
@@ -232,7 +241,7 @@ import BackIcon from '../../assets/icons/shared/back';
             {/* <View style={{flex:1,backgroundColor:'blue',zIndex:50}}> */}
                 <Animated.View style={[videoControlsStyle,Styles.outsideControls]}>
                     <OverlayOptions width={width} height={height} isScrubbing={isScrubbing} ref={OverlayOptionsRef} isBuffering={isBuffering} handleTenSec={handleTenSec.bind(null)} togglePlay={togglePlay} handleBack={handleBack} />
-                    <SliderBeta width={width} height={height} isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
+                    <SliderBeta isOptionsShown={isOptionsShown} width={width} height={height} isScrubbing={isScrubbing} seekable={seekable} slideStart={slideStart} maxValue={maxValue} _onSlideComplete={_onSlideComplete} sliderProgress={sliderProgress} />
                 </Animated.View>
                 <TapGestureHandler numberOfTaps={1} onActivated={activateHandle}  >
                 {/* <GestureDetector gesture={Gesture.Exclusive(singleTap)}> */}
